@@ -11,6 +11,4 @@ func _ready() -> void:
 
 # Called every frame. 'delta' is the elapsed time since the previous frame.
 func _process(delta: float) -> void:
-	if mp.has_camera_texture():
-		plane.material_override.albedo_texture = mp.get_camera_texture()
 	pass
