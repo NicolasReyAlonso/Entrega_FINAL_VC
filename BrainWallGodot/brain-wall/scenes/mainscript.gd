@@ -3,7 +3,7 @@ extends Node3D
 
 @export var marker_scene: PackedScene  # Escena de esfera para articulaciones
 @export var line_width: float = 0.02   # Grosor de las líneas
-
+@export var audioStreamPlayer: AudioStreamPlayer3D  # Grosor de las líneas
 var socket := WebSocketPeer.new()
 var players_data: Array = []           # Datos de poses de todos los jugadores
 var players_markers: Array = []        # Marcadores por jugador
@@ -30,10 +30,16 @@ const PLAYER_COLORS = [
 
 func _ready():
 	var err = socket.connect_to_url("ws://localhost:8765")
+	playBasicMusic()
 	if err != OK:
 		push_error("Error al conectar WebSocket: %s" % err)
 	
 	set_process(true)
+
+func playBasicMusic():
+	var music_player = audioStreamPlayer
+	music_player.play()  # Comienza la música
+
 
 func _process(delta):
 	socket.poll()
