@@ -1,9 +1,10 @@
-[gd_scene load_steps=13 format=3 uid="uid://bnl20wr3lqhow"]
+[gd_scene load_steps=18 format=3 uid="uid://bnl20wr3lqhow"]
 
 [ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://scenes/mainscript.gd" id="1_ki6c0"]
 [ext_resource type="PackedScene" uid="uid://hkb6si4cedgx" path="res://maincharrigged.blend" id="2_8ifl6"]
 [ext_resource type="PackedScene" uid="uid://by6t3bsb6eggk" path="res://scenes/Marker.tscn" id="2_hhxvm"]
 [ext_resource type="ArrayMesh" uid="uid://bhm8eqk5xw3kr" path="res://assets/maincharrigged.obj" id="3_twn0q"]
+[ext_resource type="AudioStream" uid="uid://db4dgjynruss5" path="res://assets/music/turiruriru-01.mp3" id="5_w16ng"]
 
 [sub_resource type="StandardMaterial3D" id="StandardMaterial3D_8ifl6"]
 
@@ -16,67 +17,40 @@ size = Vector2(2, 1.5)
 [sub_resource type="SphereShape3D" id="SphereShape3D_twn0q"]
 
 [sub_resource type="Shader" id="Shader_hhxvm"]
-code = "// NOTE: Shader automatically converted from Godot Engine 4.5.1.stable's StandardMaterial3D.
-
-
-shader_type spatial;
-uniform sampler2D wave;
-uniform float noise_scale = 10.0;
-uniform float wave_speed = 1.0;
-uniform float height_scale = 1.0;
-
+code = "shader_type spatial;
 render_mode blend_mix, depth_draw_always, cull_back, diffuse_burley, specular_schlick_ggx;
 
-uniform vec4 albedo : source_color;
+uniform vec4 albedo : source_color = vec4(0.0, 0.204, 0.961, 0.506);
 uniform sampler2D texture_albedo : source_color, filter_linear_mipmap, repeat_enable;
-uniform ivec2 albedo_texture_size;
-uniform float point_size : hint_range(0.1, 128.0, 0.1);
-
-uniform float roughness : hint_range(0.0, 1.0);
-uniform sampler2D texture_metallic : hint_default_white, filter_linear_mipmap, repeat_enable;
-uniform vec4 metallic_texture_channel;
-uniform sampler2D texture_roughness : hint_roughness_r, filter_linear_mipmap, repeat_enable;
-
-uniform float specular : hint_range(0.0, 1.0, 0.01);
-uniform float metallic : hint_range(0.0, 1.0, 0.01);
-
-uniform sampler2D texture_refraction : filter_linear_mipmap, repeat_enable;
-uniform float refraction : hint_range(-1.0, 1.0, 0.001);
-uniform vec4 refraction_texture_channel;
-uniform sampler2D screen_texture : hint_screen_texture, repeat_disable, filter_linear_mipmap;
-uniform sampler2D depth_texture : hint_depth_texture, repeat_disable, filter_nearest;
-
+uniform float roughness : hint_range(0.0, 1.0) = 0.0;
+uniform float metallic : hint_range(0.0, 1.0) = 0.0;
+uniform float specular : hint_range(0.0, 1.0) = 0.5;
 uniform sampler2D texture_normal : hint_roughness_normal, filter_linear_mipmap, repeat_enable;
-uniform float normal_scale : hint_range(-16.0, 16.0);
+uniform float normal_scale : hint_range(-16.0, 16.0) = 1.0;
+uniform float refraction : hint_range(-1.0, 1.0) = 0.05;
 
-uniform float anisotropy_ratio : hint_range(0.0, 1.0, 0.01);
-uniform sampler2D texture_flowmap : hint_anisotropy, filter_linear_mipmap, repeat_enable;
+uniform vec3 uv1_scale = vec3(1.0, 1.0, 1.0);
+uniform vec3 uv1_offset = vec3(0.0, 0.0, 0.0);
+uniform float uv1_blend_sharpness = 1.0;
+
 varying vec3 uv1_triplanar_pos;
-
-uniform float uv1_blend_sharpness : hint_range(0.0, 150.0, 0.001);
 varying vec3 uv1_power_normal;
-
-uniform vec3 uv1_scale;
-uniform vec3 uv1_offset;
-uniform vec3 uv2_scale;
-uniform vec3 uv2_offset;
 
 void vertex() {
 	vec3 normal = NORMAL;
-
+	
 	TANGENT = vec3(0.0, 0.0, -1.0) * abs(normal.x);
 	TANGENT += vec3(1.0, 0.0, 0.0) * abs(normal.y);
 	TANGENT += vec3(1.0, 0.0, 0.0) * abs(normal.z);
 	TANGENT = normalize(TANGENT);
-
+	
 	BINORMAL = vec3(0.0, 1.0, 0.0) * abs(normal.x);
 	BINORMAL += vec3(0.0, 0.0, -1.0) * abs(normal.y);
 	BINORMAL += vec3(0.0, 1.0, 0.0) * abs(normal.z);
 	BINORMAL = normalize(BINORMAL);
-
-	// UV1 Triplanar: Enabled
+	
 	uv1_power_normal = pow(abs(NORMAL), vec3(uv1_blend_sharpness));
-	uv1_triplanar_pos = VERTEX * uv1_scale + uv1_offset + TIME * 0.1;
+	uv1_triplanar_pos = VERTEX * uv1_scale + uv1_offset + vec3(TIME * 0.1);
 	uv1_power_normal /= dot(uv1_power_normal, vec3(1.0));
 	uv1_triplanar_pos *= vec3(1.0, -1.0, 1.0);
 }
@@ -92,46 +66,16 @@ vec4 triplanar_texture(sampler2D p_sampler, vec3 p_weights, vec3 p_triplanar_pos
 void fragment() {
 	vec4 albedo_tex = triplanar_texture(texture_albedo, uv1_power_normal, uv1_triplanar_pos);
 	ALBEDO = albedo.rgb * albedo_tex.rgb;
-
-	float metallic_tex = dot(triplanar_texture(texture_metallic, uv1_power_normal, uv1_triplanar_pos), metallic_texture_channel);
-	METALLIC = metallic_tex * metallic;
+	
+	METALLIC = metallic;
 	SPECULAR = specular;
-
-	vec4 roughness_texture_channel = vec4(1.0, 0.0, 0.0, 0.0);
-	float roughness_tex = dot(triplanar_texture(texture_roughness, uv1_power_normal, uv1_triplanar_pos), roughness_texture_channel);
-	ROUGHNESS = roughness_tex * roughness;
-
-	// Normal Map: Enabled
-	NORMAL_MAP = triplanar_texture(texture_normal, uv1_power_normal, uv1_triplanar_pos).rgb;
+	ROUGHNESS = roughness;
+	
+	vec3 normal_tex = triplanar_texture(texture_normal, uv1_power_normal, uv1_triplanar_pos).rgb;
+	NORMAL_MAP = normal_tex;
 	NORMAL_MAP_DEPTH = normal_scale;
-
-	// Refraction: Enabled (with normal map texture)
-	vec3 unpacked_normal = NORMAL_MAP;
-	unpacked_normal.xy = unpacked_normal.xy * 2.0 - 1.0;
-	unpacked_normal.z = sqrt(max(0.0, 1.0 - dot(unpacked_normal.xy, unpacked_normal.xy)));
-	vec3 ref_normal = normalize(mix(
-			NORMAL,
-			TANGENT * unpacked_normal.x + BINORMAL * unpacked_normal.y + NORMAL * unpacked_normal.z,
-			NORMAL_MAP_DEPTH));
-	vec2 ref_ofs = SCREEN_UV - ref_normal.xy * dot(triplanar_texture(texture_refraction, uv1_power_normal, uv1_triplanar_pos), refraction_texture_channel) * refraction;
-
-	float ref_amount = 1.0 - albedo.a * albedo_tex.a;
-
-	float refraction_depth_tex = textureLod(depth_texture, ref_ofs, 0.0).r;
-	vec4 refraction_view_pos = INV_PROJECTION_MATRIX * vec4(SCREEN_UV * 2.0 - 1.0, refraction_depth_tex, 1.0);
-	refraction_view_pos.xyz /= refraction_view_pos.w;
-
-	// If the depth buffer is lower then the model's Z position, use the refracted UV, otherwise use the normal screen UV.
-	// At low depth differences, decrease refraction intensity to avoid sudden discontinuities.
-	EMISSION += textureLod(screen_texture, mix(SCREEN_UV, ref_ofs, smoothstep(0.0, 1.0, VERTEX.z - refraction_view_pos.z)), ROUGHNESS * 8.0).rgb * ref_amount * EXPOSURE;
-	ALBEDO *= 1.0 - ref_amount;
-	// Force transparency on the material (required for refraction).
-	ALPHA = 1.0;
-
-	// Anisotropy: Enabled
-	vec3 anisotropy_tex = triplanar_texture(texture_flowmap, uv1_power_normal, uv1_triplanar_pos).rga;
-	ANISOTROPY = anisotropy_ratio * anisotropy_tex.b;
-	ANISOTROPY_FLOW = anisotropy_tex.rg * 2.0 - 1.0;
+	
+	ALPHA = albedo.a * albedo_tex.a;
 }
 "
 
@@ -142,85 +86,53 @@ noise = SubResource("FastNoiseLite_w16ng")
 seamless = true
 as_normal_map = true
 
-[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_al2iq"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_al2iq"]
 render_priority = 0
 shader = SubResource("Shader_hhxvm")
-shader_parameter/wave = SubResource("NoiseTexture2D_al2iq")
-shader_parameter/noise_scale = 10.0
-shader_parameter/wave_speed = 1.0
-shader_parameter/height_scale = 1.0
 shader_parameter/albedo = Color(0, 0.20392157, 0.9607843, 0.5058824)
-shader_parameter/albedo_texture_size = Vector2i(0, 0)
-shader_parameter/point_size = 1.0
 shader_parameter/roughness = 0.0
-shader_parameter/metallic_texture_channel = Vector4(1, 0, 0, 0)
-shader_parameter/specular = 0.5
 shader_parameter/metallic = 0.0
-shader_parameter/refraction = 0.05
-shader_parameter/refraction_texture_channel = Vector4(1, 0, 0, 0)
+shader_parameter/specular = 0.5
 shader_parameter/texture_normal = SubResource("NoiseTexture2D_1jq6i")
 shader_parameter/normal_scale = 1.0
-shader_parameter/anisotropy_ratio = 0.0
-shader_parameter/uv1_blend_sharpness = 1.0
+shader_parameter/refraction = 0.05
 shader_parameter/uv1_scale = Vector3(1, 1, 1)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
-shader_parameter/uv2_scale = Vector3(1, 1, 1)
-shader_parameter/uv2_offset = Vector3(0, 0, 0)
+shader_parameter/uv1_blend_sharpness = 1.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_dmtm4"]
 material = SubResource("ShaderMaterial_al2iq")
 size = Vector3(0.74, 0.5, 1)
 
+[sub_resource type="PlaneMesh" id="PlaneMesh_w16ng"]
+
 [sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_twn0q"]
 data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
 
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_dmtm4"]
-panorama = ExtResource("7_al2iq")
-
-[sub_resource type="Sky" id="Sky_1xypn"]
-sky_material = SubResource("PanoramaSkyMaterial_dmtm4")
-
 [sub_resource type="Environment" id="Environment_1jq6i"]
-background_mode = 2
-sky = SubResource("Sky_1xypn")
+background_mode = 1
+background_color = Color(0.53, 0.81, 0.92, 1)
 tonemap_mode = 2
 glow_enabled = true
-
-[sub_resource type="PanoramaSkyMaterial" id="PanoramaSkyMaterial_1jq6i"]
-panorama = ExtResource("5_w16ng")
-
-[sub_resource type="Sky" id="Sky_al2iq"]
-sky_material = SubResource("PanoramaSkyMaterial_1jq6i")
-
-[sub_resource type="Environment" id="Environment_dmtm4"]
-background_mode = 2
-sky = SubResource("Sky_al2iq")
 
 [node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer")]
 script = ExtResource("1_ki6c0")
 marker_scene = ExtResource("2_hhxvm")
-
-[node name="Node" type="Node" parent="."]
+audioStreamPlayer = NodePath("AudioStreamPlayer3D")
 
 [node name="CameraPlane" type="MeshInstance3D" parent="."]
-transform = Transform3D(0.99425894, 0, 0, 0, 0.99425894, 0, 0, 0, 0.99425894, -3.7136059, -2.9802322e-08, -0.00046432018)
+transform = Transform3D(0.994259, 0, 0, 0, 0.994259, 0, 0, 0, 0.994259, -3.71361, 0, 0)
 mesh = SubResource("PlaneMesh_twn0q")
 
-[node name="Skeleton3D" type="Skeleton3D" parent="."]
-
 [node name="maincharrigged" parent="." instance=ExtResource("2_8ifl6")]
-transform = Transform3D(0.99749047, -0.07080109, 0, 0.07080109, 0.99749047, 0, 0, 0, 1, -0.6203307, -0.031567514, -0.40637362)
+transform = Transform3D(0.99749, -0.070801, 0, 0.070801, 0.99749, 0, 0, 0, 1, -0.620331, -0.031568, -0.406374)
 
 [node name="RigidBody3D" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1.9377391)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.5, -1.93774)
 physics_material_override = SubResource("PhysicsMaterial_hhxvm")
-script = ExtResource("4_w16ng")
-float_force = 1.3
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.12263584, 0.5149269, 0.05374694)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.122636, 0.514927, 0.053747)
 shape = SubResource("SphereShape3D_twn0q")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
@@ -228,20 +140,30 @@ transform = Transform3D(0.07, 0, 0, 0, 0.07, 0, 0, 0, 0.07, 0, 0, 0)
 mesh = ExtResource("3_twn0q")
 
 [node name="maincharrigged2" parent="." instance=ExtResource("2_8ifl6")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.44422886, 0, -0.37975186)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.444229, 0, -0.379752)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
-transform = Transform3D(2.635702, 0, 0, 0, 1, 0, 0, 0, 2.2960188, 9.080519, 0, 0)
+[node name="Water" type="MeshInstance3D" parent="."]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, 0, 0)
+mesh = SubResource("BoxMesh_dmtm4")
+
+[node name="Ground" type="MeshInstance3D" parent="."]
+transform = Transform3D(10, 0, 0, 0, 1, 0, 0, 0, 10, 0, -1, 0)
 mesh = SubResource("PlaneMesh_w16ng")
 
-[node name="StaticBody3D" type="StaticBody3D" parent="MeshInstance3D"]
+[node name="StaticBody3D" type="StaticBody3D" parent="Ground"]
 
-[node name="CollisionShape3D" type="CollisionShape3D" parent="MeshInstance3D/StaticBody3D"]
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D"]
 shape = SubResource("ConcavePolygonShape3D_twn0q")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.434817, 2.6619172)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.434817, 2.66192)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.37429914, 0.927308, 0, -0.927308, 0.37429914, 8.488641, 1.2095172, -1.621266)
+transform = Transform3D(1, 0, 0, 0, 0.374299, 0.927308, 0, -0.927308, 0.374299, 0, 5, 0)
 shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1jq6i")
+
+[node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
+stream = ExtResource("5_w16ng")
