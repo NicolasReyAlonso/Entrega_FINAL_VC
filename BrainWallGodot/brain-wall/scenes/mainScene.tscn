@@ -1,4 +1,4 @@
-[gd_scene load_steps=43 format=3 uid="uid://bnl20wr3lqhow"]
+[gd_scene load_steps=45 format=3 uid="uid://bnl20wr3lqhow"]
 
 [ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://scenes/mainscript.gd" id="1_ki6c0"]
 [ext_resource type="PackedScene" uid="uid://hkb6si4cedgx" path="res://maincharrigged.blend" id="2_8ifl6"]
@@ -13,6 +13,8 @@
 [ext_resource type="Shader" uid="uid://cb1agqsu2lkix" path="res://assets/shaders/toon_water.gdshader" id="8_jmmcx"]
 [ext_resource type="Script" uid="uid://blisl35nko52s" path="res://scenes/wall.gd" id="9_1xypn"]
 [ext_resource type="Script" uid="uid://sgh6f385n4lf" path="res://scenes/character_body_3d.gd" id="10_2n1xb"]
+[ext_resource type="ArrayMesh" uid="uid://0omb6vj0e82b" path="res://assets/models/Coliseum.obj" id="14_jmmcx"]
+[ext_resource type="Texture2D" uid="uid://dysayoi4g77em" path="res://assets/models/Colitext.png" id="15_vdgl5"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3tio3"]
 frequency = 0.0731
@@ -72,7 +74,7 @@ as_normal_map = true
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_al2iq"]
 render_priority = 0
 shader = ExtResource("8_jmmcx")
-shader_parameter/albedo = Color(0, 0.20392157, 0.9607843, 0.5058824)
+shader_parameter/albedo = Color(0, 0.6, 0.7882353, 0.972549)
 shader_parameter/toon_steps = 1.898000042655
 shader_parameter/toon_specular_steps = 1.134000006365
 shader_parameter/rim_strength = 0.0
@@ -80,18 +82,13 @@ shader_parameter/rim_threshold = 0.230000010925
 shader_parameter/saturation_boost = 0.7370000350075
 shader_parameter/texture_normal = SubResource("NoiseTexture2D_1jq6i")
 shader_parameter/normal_scale = 0.6000007885000009
-shader_parameter/uv1_scale = Vector3(16.325, 6.67, 17.475)
+shader_parameter/uv1_scale = Vector3(17.755, 7.39, 21.315)
 shader_parameter/uv1_offset = Vector3(0, 0, 0)
 shader_parameter/uv1_blend_sharpness = 1.0
 
 [sub_resource type="BoxMesh" id="BoxMesh_dmtm4"]
 material = SubResource("ShaderMaterial_al2iq")
 size = Vector3(0.2, 0.1, 0.14)
-
-[sub_resource type="PlaneMesh" id="PlaneMesh_w16ng"]
-
-[sub_resource type="ConcavePolygonShape3D" id="ConcavePolygonShape3D_twn0q"]
-data = PackedVector3Array(1, 0, 1, -1, 0, 1, 1, 0, -1, -1, 0, 1, -1, 0, -1, 1, 0, -1)
 
 [sub_resource type="Curve" id="Curve_f44mt"]
 _data = [Vector2(0, 0), 0.0, 0.5388648, 0, 0, Vector2(0.73248404, 0.7985318), 0.0, 0.0, 0, 0, Vector2(1, 1), -0.09567609, 0.0, 0, 0]
@@ -143,6 +140,19 @@ size = Vector3(2, 2, 0.2)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_3tio3"]
 
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_0eirs"]
+render_priority = 0
+shader = ExtResource("6_fp4eh")
+shader_parameter/steps = 4
+shader_parameter/base_color = Color(0.8980392, 0.87058824, 0.8666667, 1)
+shader_parameter/albedo_texture = ExtResource("15_vdgl5")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_gg62s"]
+render_priority = 0
+shader = ExtResource("7_3tio3")
+shader_parameter/outline_width = 0.03
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+
 [node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer")]
 script = ExtResource("1_ki6c0")
 marker_scene = ExtResource("2_hhxvm")
@@ -179,17 +189,8 @@ shape = SubResource("BoxShape3D_dmtm4")
 transform = Transform3D(-0.0066845356, 0, -0.99997765, 0, 1, 0, 0.99997765, 0, -0.0066845356, -3.1394372, 0, 0.2891082)
 
 [node name="Water" type="MeshInstance3D" parent="."]
-transform = Transform3D(22.533588, 0, 0, 0, 1, 0, 0, 0, 38.794487, -0.4974723, 0, -0.023804307)
+transform = Transform3D(65.57431, 0, 0, 0, 1, 0, 0, 0, 114.70263, 0.20365024, 0, -0.023804307)
 mesh = SubResource("BoxMesh_dmtm4")
-
-[node name="Ground" type="MeshInstance3D" parent="."]
-transform = Transform3D(9.999999, 0, 0, 0, 1, 0, 0, 0, 9.999999, 0, -1, 0)
-mesh = SubResource("PlaneMesh_w16ng")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Ground"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Ground/StaticBody3D"]
-shape = SubResource("ConcavePolygonShape3D_twn0q")
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.96316254, 0.26891983, 0, -0.26891983, 0.96316254, 0.71935046, 1.2105271, 1.8233114)
@@ -248,3 +249,15 @@ mesh = SubResource("BoxMesh_ha8th")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D3"]
 shape = SubResource("BoxShape3D_3tio3")
+
+[node name="Node3D" type="Node3D" parent="."]
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -1.5157738, -1.0002489, 0.5615063)
+mesh = ExtResource("14_jmmcx")
+surface_material_override/0 = SubResource("ShaderMaterial_0eirs")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D/MeshInstance3D"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0058689117, 0.008272171, 0.009800434)
+mesh = ExtResource("14_jmmcx")
+surface_material_override/0 = SubResource("ShaderMaterial_gg62s")
