@@ -1,4 +1,4 @@
-[gd_scene load_steps=45 format=3 uid="uid://bnl20wr3lqhow"]
+[gd_scene load_steps=44 format=3 uid="uid://bnl20wr3lqhow"]
 
 [ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://scenes/mainscript.gd" id="1_ki6c0"]
 [ext_resource type="PackedScene" uid="uid://hkb6si4cedgx" path="res://maincharrigged.blend" id="2_8ifl6"]
@@ -136,8 +136,6 @@ size = Vector3(2, 2, 0.2)
 [sub_resource type="BoxShape3D" id="BoxShape3D_ha8th"]
 size = Vector3(2, 2, 0.2)
 
-[sub_resource type="BoxMesh" id="BoxMesh_ha8th"]
-
 [sub_resource type="BoxShape3D" id="BoxShape3D_3tio3"]
 
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0eirs"]
@@ -153,10 +151,11 @@ shader = ExtResource("7_3tio3")
 shader_parameter/outline_width = 0.03
 shader_parameter/outline_color = Color(0, 0, 0, 1)
 
-[node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer")]
+[node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer", "nodevec")]
 script = ExtResource("1_ki6c0")
 marker_scene = ExtResource("2_hhxvm")
 audioStreamPlayer = NodePath("AudioStreamPlayer3D")
+nodevec = NodePath("Humans")
 
 [node name="CameraPlane" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.994259, 0, 0, 0, 0.994259, 0, 0, 0, 0.994259, -4.1799717, 0, 0)
@@ -166,12 +165,12 @@ mesh = SubResource("PlaneMesh_twn0q")
 transform = Transform3D(0.16868426, -0.011973067, -0.98559755, 0.070801005, 0.9974901, -9.1790914e-10, 0.9831237, -0.06978129, 0.16910873, -3.1340518, -0.03156799, -0.406374)
 
 [node name="RigidBody3D" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.3554548, -1.7799826)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.8281765, 0.85978997, 0.84861326)
 collision_layer = 5
 script = ExtResource("4_al2iq")
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D"]
-transform = Transform3D(-0.00092482206, 0, 0.06999389, 0, 0.07, 0, -0.06999389, 0, -0.00092482206, -4.2550426, -0.45323288, 1.8655217)
+transform = Transform3D(-0.00092482206, 0, 0.06999389, 0, 0.07, 0, -0.06999389, 0, -0.00092482206, -0.4889076, -0.45323288, -0.43433714)
 mesh = ExtResource("3_twn0q")
 surface_material_override/0 = SubResource("StandardMaterial3D_3tio3")
 
@@ -193,7 +192,7 @@ transform = Transform3D(65.57431, 0, 0, 0, 1, 0, 0, 0, 114.70263, 0.20365024, 0,
 mesh = SubResource("BoxMesh_dmtm4")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.96316254, 0.26891983, 0, -0.26891983, 0.96316254, 0.71935046, 1.2105271, 1.8233114)
+transform = Transform3D(1, 0, 0, 0, 0.96316254, 0.26891983, 0, -0.26891983, 0.96316254, 0, 0.8126211, 2.697317)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.59291244, 0.48824963, -0.640365, -0.11281077, 0.8377407, 0.5342885, 0.797326, -0.24454623, 0.5517866, 0, 5, 0)
@@ -243,17 +242,13 @@ shape = SubResource("BoxShape3D_ha8th")
 [node name="RigidBody3D3" type="RigidBody3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.4981225)
 
-[node name="MeshInstance3D" type="MeshInstance3D" parent="RigidBody3D3"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.22833657, -0.02264285, -2.0429075)
-mesh = SubResource("BoxMesh_ha8th")
-
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D3"]
 shape = SubResource("BoxShape3D_3tio3")
 
 [node name="Node3D" type="Node3D" parent="."]
 
 [node name="MeshInstance3D" type="MeshInstance3D" parent="Node3D"]
-transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, -1.5157738, -1.0002489, 0.5615063)
+transform = Transform3D(2, 0, 0, 0, 2, 0, 0, 0, 2, 0, -1, 0.562)
 mesh = ExtResource("14_jmmcx")
 surface_material_override/0 = SubResource("ShaderMaterial_0eirs")
 
@@ -261,3 +256,6 @@ surface_material_override/0 = SubResource("ShaderMaterial_0eirs")
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.0058689117, 0.008272171, 0.009800434)
 mesh = ExtResource("14_jmmcx")
 surface_material_override/0 = SubResource("ShaderMaterial_gg62s")
+
+[node name="Humans" type="Node3D" parent="."]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76, -0.83290803)
