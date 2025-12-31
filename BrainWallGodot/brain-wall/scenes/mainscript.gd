@@ -1,9 +1,15 @@
 # PoseReceiver.gd
 extends Node3D
 
+@export var target_height: float = 2.0   # altura deseada en metros dentro del juego
+
 @export var marker_scene: PackedScene  # Escena de esfera para articulaciones
 @export var line_width: float = 0.02   # Grosor de las líneas
 @export var audioStreamPlayer: AudioStreamPlayer3D  # Grosor de las líneas
+@export var nodevec: Node3D
+var offset: Vector3  # Desplazamiento global
+@export var scale_factor: float = 0.7            # Escala global
+
 var socket := WebSocketPeer.new()
 var players_data: Array = []           # Datos de poses de todos los jugadores
 var players_markers: Array = []        # Marcadores por jugador
@@ -31,6 +37,7 @@ const PLAYER_COLORS = [
 func _ready():
 	var err = socket.connect_to_url("ws://localhost:8765")
 	playBasicMusic()
+	offset = nodevec.global_position 
 	if err != OK:
 		push_error("Error al conectar WebSocket: %s" % err)
 	
@@ -47,6 +54,7 @@ func _process(delta):
 		while socket.get_available_packet_count() > 0:
 			var data = socket.get_packet().get_string_from_utf8()
 			var parsed = JSON.parse_string(data)
+			
 			if parsed == null:
 				push_warning("JSON inválido: %s" % data)
 				continue
@@ -106,35 +114,63 @@ func remove_player():
 		l.queue_free()
 
 func update_player(player_idx: int, pose: Array):
-	"""Actualiza la visualización de un jugador específico"""
 	if pose.size() != KEYPOINTS.size():
 		return
-	
+
 	var markers = players_markers[player_idx]
 	var lines = players_lines[player_idx]
 	var color = PLAYER_COLORS[player_idx % PLAYER_COLORS.size()]
-	
-	# Actualizar posiciones de marcadores
+
+	# -----------------------------
+	# 1. Calcular altura del jugador
+	# -----------------------------
+
+	# cabeza (índice 0 del KEYPOINTS)
+	var head_y = pose[0]["y"]
+
+	# pies → elegir el más bajo entre ambos
+	var left_ankle_y = pose[11]["y"]  # keypoint 27
+	var right_ankle_y = pose[12]["y"] # keypoint 28
+	var foot_y = max(left_ankle_y, right_ankle_y)
+
+	var raw_height = abs(head_y - foot_y)
+
+	if raw_height < 0.001:
+		raw_height = 0.001
+
+	# factor para que todas las personas midan lo mismo
+	var normal_scale = target_height / raw_height
+
+	# -----------------------------
+	# 2. Generar posiciones escaladas
+	# -----------------------------
+
 	var positions = []
 	for i in range(KEYPOINTS.size()):
 		var lm = pose[i]
+
 		var x = (lm["x"] - 0.5) * 2.0
 		var y = (0.5 - lm["y"]) * 2.0
 		var z = 0.0
-		var pos = Vector3(x, y, z)
+
+		# NORMALIZACIÓN + escala global + offset
+		var pos = Vector3(x, y, z) * normal_scale * scale_factor + offset
+
 		positions.append(pos)
-		
+
 		markers[i].position = pos
-		
-		# Tamaño y color: cabeza más grande y roja
+
+		# colores
 		if i == 0:
 			markers[i].scale = Vector3(0.12, 0.12, 0.12)
 			set_marker_color(markers[i], Color(1, 0, 0))
 		else:
 			markers[i].scale = Vector3(0.06, 0.06, 0.06)
 			set_marker_color(markers[i], color)
-	
-	# Actualizar líneas de conexión
+
+	# -----------------------------
+	# 3. Actualizar las líneas
+	# -----------------------------
 	for i in range(SKELETON_CONNECTIONS.size()):
 		var connection = SKELETON_CONNECTIONS[i]
 		var start_idx = connection[0]
