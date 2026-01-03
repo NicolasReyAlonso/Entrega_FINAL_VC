@@ -88,9 +88,12 @@ async def capture_and_broadcast():
                             by = int(landmarks[b].y * h)
                             cv2.line(debug_frame, (ax, ay), (bx, by), color, 2)
                     
-                    # Extraer puntos clave
+                    # Extraer puntos clave (ahora con coordenada Z para 3D)
+                    # La coordenada z representa la profundidad relativa
+                    # Valores negativos = más cerca de la cámara
+                    # Valores positivos = más lejos de la cámara
                     pose_points = [
-                        {"x": landmarks[i].x, "y": landmarks[i].y} 
+                        {"x": landmarks[i].x, "y": landmarks[i].y, "z": landmarks[i].z} 
                         for i in KEYPOINTS
                     ]
                     poses_data.append(pose_points)

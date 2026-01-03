@@ -9,6 +9,7 @@ extends Node3D
 @export var nodevec: Node3D
 var offset: Vector3  # Desplazamiento global
 @export var scale_factor: float = 0.7            # Escala global
+@export var depth_scale: float = 2.0             # Escala para la profundidad (Z)
 
 var socket := WebSocketPeer.new()
 var players_data: Array = []           # Datos de poses de todos los jugadores
@@ -151,10 +152,16 @@ func update_player(player_idx: int, pose: Array):
 
 		var x = (lm["x"] - 0.5) * 2.0
 		var y = (0.5 - lm["y"]) * 2.0
+		
+		# Usar la coordenada Z de MediaPipe para profundidad
+		# MediaPipe z: negativo = más cerca de la cámara
+		# En Godot invertimos el signo para que el movimiento sea intuitivo
 		var z = 0.0
+		if "z" in lm:
+			z = -lm["z"] * depth_scale  # Invertido para que hacia adelante sea +Z
 
 		# NORMALIZACIÓN + escala global + offset
-		var pos = Vector3(x, y, z) * normal_scale * scale_factor + offset
+		var pos = Vector3(x * normal_scale * scale_factor, y * normal_scale * scale_factor, z) + offset
 
 		positions.append(pos)
 
