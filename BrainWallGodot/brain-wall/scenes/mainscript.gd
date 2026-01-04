@@ -1,31 +1,73 @@
 # PoseReceiver.gd
 extends Node3D
 
-@export var player_scene: PackedScene  # Escena del personaje Eleven
-@export var offset: Vector3 = Vector3.ZERO
-@export var player_scale: float = 0.1  # Escala del modelo
-@export var depth_scale: float = 1.0
-@export var movement_smoothing: float = 0.2  # Suavizado del movimiento
-@export var rotation_smoothing: float = 0.08  # Suavizado de rotación (más bajo = más suave)
+@export var target_height: float = 2.0   # altura deseada en metros dentro del juego
+@export var player_scene: PackedScene  # Escena por defecto (fallback)
 @export var audioStreamPlayer: AudioStreamPlayer3D
+@export var offset: Vector3 = Vector3.ZERO
+@export var scale_factor: float = 0.7            # Escala global
+@export var depth_scale: float = 2.0             # Escala para la profundidad (Z)
+@export var mirror_mode: bool = true             # Espejo (true = movimiento espejo)
+@export var model_scale: float = 1.0             # Escala adicional del personaje
+@export var movement_smoothing: float = 0.2      # Suavizado del movimiento
 
 var socket := WebSocketPeer.new()
 var players_data: Array = []
 var players: Array = []  # Instancias de los personajes
-
-# Almacenar últimas rotaciones válidas para evitar espasmos
-var last_valid_rotations: Dictionary = {}
+var players_skeletons: Array = [] # Esqueletos de los personajes
+var character_assignments: Array = []
+var loaded_scenes: Dictionary = {}
+var bone_names_printed: bool = false
 
 # Índices de KEYPOINTS enviados por MediaPipe:
-# 0: nariz, 1: hombro_izq, 2: hombro_der, 3: codo_izq, 4: codo_der
-# 5: muñeca_izq, 6: muñeca_der, 7: cadera_izq, 8: cadera_der
-# 9: rodilla_izq, 10: rodilla_der, 11: tobillo_izq, 12: tobillo_der
 const KEYPOINTS = [0, 11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28]
 
 # Colores para diferentes jugadores
 const PLAYER_COLORS = [
 	Color(0, 1, 0),      # Verde - Jugador 1
 	Color(1, 0, 1)       # Magenta - Jugador 2
+]
+
+# Mapeo de huesos (Prioridad al proporcionado por el usuario)
+const BONE_NAMES = {
+	"upper_arm_L": "upper_arm.L",
+	"forearm_L": "forearm.L", 
+	"upper_arm_R": "upper_arm.R",
+	"forearm_R": "forearm.R",
+	"thigh_L": "thigh.L",
+	"shin_L": "shin.L",
+	"thigh_R": "thigh.R",
+	"shin_R": "shin.R",
+}
+
+# Mapeo alternativo (Español/Mixamo a veces)
+const BONE_NAMES_ES = {
+	"upper_arm_L": "Brazo.L",
+	"forearm_L": "Mano.L", 
+	"upper_arm_R": "Brazo.R",
+	"forearm_R": "Mano.R",
+	"thigh_L": "Pierna.L",
+	"shin_L": "Pie.L",
+	"thigh_R": "Pierna.R",
+	"shin_R": "Pie.R",
+}
+
+const LIMB_INDICES = {
+	"upper_arm_L": [1, 3],   # hombro izq -> codo izq
+	"forearm_L": [3, 5],     # codo izq -> muñeca izq
+	"upper_arm_R": [2, 4],   # hombro der -> codo der
+	"forearm_R": [4, 6],     # codo der -> muñeca der
+	"thigh_L": [7, 9],       # cadera izq -> rodilla izq
+	"shin_L": [9, 11],       # rodilla izq -> tobillo izq
+	"thigh_R": [8, 10],      # cadera der -> rodilla der
+	"shin_R": [10, 12],      # rodilla der -> tobillo der
+}
+
+const UPDATE_ORDER = [
+	"upper_arm_L", "forearm_L",
+	"upper_arm_R", "forearm_R",
+	"thigh_L", "shin_L",
+	"thigh_R", "shin_R"
 ]
 
 func _ready():
@@ -39,8 +81,12 @@ func _ready():
 	
 	print("Jugador 1: ", character1)
 	print("Jugador 2: ", character2)
-	load_character(character1)
-	load_character(character2)
+	
+	character_assignments = [character1, character2]
+	
+	# Pre-cargar escenas
+	get_character_scene(character1)
+	get_character_scene(character2)
 	
 	var err = socket.connect_to_url("ws://localhost:8765")
 	if err != OK:
@@ -51,34 +97,38 @@ func _ready():
 	
 	set_process(true)
 
-func playBasicMusic():
-	var music_player = audioStreamPlayer
-	music_player.play()  # Comienza la música
-
-func load_character(char: String):
-	match char:
+func get_character_scene(char_name: String) -> PackedScene:
+	if loaded_scenes.has(char_name):
+		return loaded_scenes[char_name]
+		
+	var scene: PackedScene = null
+	match char_name:
 		"saw":
 			print("Cargando Saw...")
 			if ResourceLoader.exists("res://assets/models/Saw.glb"):
-				var scene = load("res://assets/models/Saw.glb")
-				player_scene = scene
+				scene = load("res://assets/models/Saw.glb")
 		"et":
 			print("Cargando ET...")
 			if ResourceLoader.exists("res://assets/models/ET.glb"):
-				var scene = load("res://assets/models/ET.glb")
-				player_scene = scene
+				scene = load("res://assets/models/ET.glb")
 		"eleven":
 			print("Cargando Eleven...")
-			if ResourceLoader.exists("res://assets/models/Eleven.glb"):
-				var scene = load("res://assets/models/Eleven.glb")
-				player_scene = scene
+			if ResourceLoader.exists("res://assets/Characters/eleven.tscn"):
+				scene = load("res://assets/Characters/eleven.tscn")
 		"homer":
 			print("Cargando Homer...")
 			if ResourceLoader.exists("res://assets/models/Homer.glb"):
-				var scene = load("res://assets/models/Homer.glb")
-				player_scene = scene
+				scene = load("res://assets/models/Homer.glb")
 		_:
-			print("Personaje no reconocido: ", char)
+			print("Personaje no reconocido: ", char_name)
+	
+	if scene:
+		loaded_scenes[char_name] = scene
+		# Si no hay escena por defecto, usar la primera que carguemos
+		if player_scene == null:
+			player_scene = scene
+	
+	return scene
 
 func _process(delta):
 	socket.poll()
@@ -105,12 +155,36 @@ func update_all_players():
 		update_player(i, players_data[i])
 
 func add_player():
-	var player_instance = player_scene.instantiate()
-	player_instance.scale = Vector3.ONE * player_scale
+	var player_idx = players.size()
+	var char_name = "eleven"
+	
+	if player_idx < character_assignments.size():
+		char_name = character_assignments[player_idx]
+	
+	var scene_to_instantiate = get_character_scene(char_name)
+	if scene_to_instantiate == null:
+		scene_to_instantiate = player_scene # Fallback
+	
+	if scene_to_instantiate == null:
+		push_error("No se pudo cargar escena para jugador " + str(player_idx))
+		return
+
+	var player_instance = scene_to_instantiate.instantiate()
+	# La escala se maneja en update_player ahora
 	add_child(player_instance)
 	players.append(player_instance)
 	
-	var player_idx = players.size() - 1
+	# Buscar esqueleto
+	var skeleton = find_skeleton_recursive(player_instance)
+	players_skeletons.append(skeleton)
+	
+	# Debug huesos
+	if skeleton and not bone_names_printed:
+		print("=== HUESOS ENCONTRADOS ===")
+		for i in range(skeleton.get_bone_count()):
+			print("Hueso %d: %s" % [i, skeleton.get_bone_name(i)])
+		bone_names_printed = true
+	
 	apply_color_to_player(player_instance, PLAYER_COLORS[player_idx % PLAYER_COLORS.size()])
 
 func remove_player():
@@ -118,161 +192,156 @@ func remove_player():
 		return
 	var player = players.pop_back()
 	player.queue_free()
+	if not players_skeletons.is_empty():
+		players_skeletons.pop_back()
+
+func find_skeleton_recursive(node: Node) -> Skeleton3D:
+	if node is Skeleton3D:
+		return node
+	for child in node.get_children():
+		var result = find_skeleton_recursive(child)
+		if result:
+			return result
+	return null
 
 func update_player(player_idx: int, pose: Array):
 	if pose.size() != KEYPOINTS.size() or player_idx >= players.size():
 		return
 	
-	var player = players[player_idx]
+	var model = players[player_idx]
+	var skeleton = players_skeletons[player_idx]
 	
-	# Calcular posición central (promedio de caderas)
+	# Posicionar el modelo base
+	var head_y = pose[0]["y"]
+	var left_ankle_y = pose[11]["y"]
+	var right_ankle_y = pose[12]["y"]
+	var foot_y = max(left_ankle_y, right_ankle_y)
+
+	var raw_height = abs(head_y - foot_y)
+	if raw_height < 0.001:
+		raw_height = 0.001
+
+	var normal_scale = target_height / raw_height
+
+	# Posición base del modelo (usar centro de caderas)
 	var hip_left = pose[7]
 	var hip_right = pose[8]
-	
-	var center_x = (hip_left["x"] + hip_right["x"]) / 2.0
-	var center_y = (hip_left["y"] + hip_right["y"]) / 2.0
-	var center_z = (hip_left.get("z", 0) + hip_right.get("z", 0)) / 2.0
-	
-	# Convertir coordenadas - efecto espejo (invertir X)
-	var world_x = -(center_x - 0.5) * 4.0
-	var world_y = (1.0 - center_y) * 3.0 - 1.5
-	var world_z = -center_z * depth_scale
-	
-	var target_pos = Vector3(world_x, world_y, world_z) + offset
-	player.global_position = player.global_position.lerp(target_pos, movement_smoothing)
-	
-	var skeleton = find_skeleton(player)
-	if not skeleton:
-		return
-	
-	update_skeleton_pose(skeleton, pose, player_idx)
+	var hip_x = ((hip_left["x"] + hip_right["x"]) / 2.0 - 0.5) * 2.0
+	var hip_y = ((0.5 - (hip_left["y"] + hip_right["y"]) / 2.0)) * 2.0
+	var hip_z = 0.0
+	if "z" in hip_left:
+		hip_z = -(hip_left["z"] + hip_right.get("z", 0)) / 2.0 * depth_scale
 
-func find_skeleton(node: Node) -> Skeleton3D:
-	if node is Skeleton3D:
-		return node
-	for child in node.get_children():
-		var result = find_skeleton(child)
-		if result:
-			return result
-	return null
+	# Invertir X si modo espejo está activado
+	if mirror_mode:
+		hip_x = -hip_x
 
-func update_skeleton_pose(skeleton: Skeleton3D, pose: Array, player_idx: int):
-	# Convertir pose a vectores 3D
-	var points: Array[Vector3] = []
-	for p in pose:
-		var px = -(p["x"] - 0.5)  # Invertir X para espejo
-		var py = -(p["y"] - 0.5)  # Invertir Y
-		var pz = p.get("z", 0) * depth_scale
-		points.append(Vector3(px, py, pz))
-	
-	# Inicializar diccionario de rotaciones para este jugador si no existe
-	var player_key = str(player_idx)
-	if not last_valid_rotations.has(player_key):
-		last_valid_rotations[player_key] = {}
-	
-	# ===== BRAZOS =====
-	# Brazo.L = brazo superior izquierdo (hombro a codo)
-	# Mano.L = antebrazo izquierdo (codo a muñeca)
-	
-	# Brazo izquierdo: hombro(1) -> codo(3)
-	apply_bone_rotation(skeleton, "Brazo.L", points[1], points[3], Vector3.RIGHT, player_key)
-	# Brazo derecho: hombro(2) -> codo(4)  
-	apply_bone_rotation(skeleton, "Brazo.R", points[2], points[4], Vector3.LEFT, player_key)
-	
-	# Antebrazo izquierdo: codo(3) -> muñeca(5)
-	apply_bone_rotation(skeleton, "Mano.L", points[3], points[5], Vector3.RIGHT, player_key)
-	# Antebrazo derecho: codo(4) -> muñeca(6)
-	apply_bone_rotation(skeleton, "Mano.R", points[4], points[6], Vector3.LEFT, player_key)
-	
-	# ===== PIERNAS =====
-	# Pierna.L = muslo izquierdo (cadera a rodilla)
-	# Pie.L = espinilla izquierda (rodilla a tobillo)
-	
-	# Muslo izquierdo: cadera(7) -> rodilla(9)
-	apply_bone_rotation(skeleton, "Pierna.L", points[7], points[9], Vector3.DOWN, player_key)
-	# Muslo derecho: cadera(8) -> rodilla(10)
-	apply_bone_rotation(skeleton, "Pierna.R", points[8], points[10], Vector3.DOWN, player_key)
-	
-	# Espinilla izquierda: rodilla(9) -> tobillo(11)
-	apply_bone_rotation(skeleton, "Pie.L", points[9], points[11], Vector3.DOWN, player_key)
-	# Espinilla derecha: rodilla(10) -> tobillo(12)
-	apply_bone_rotation(skeleton, "Pie.R", points[10], points[12], Vector3.DOWN, player_key)
+	var base_pos = Vector3(
+		hip_x * normal_scale * scale_factor,
+		hip_y * normal_scale * scale_factor,
+		hip_z
+	) + offset
 
-func apply_bone_rotation(skeleton: Skeleton3D, bone_name: String, start: Vector3, end: Vector3, rest_dir: Vector3, player_key: String):
-	var bone_idx = skeleton.find_bone(bone_name)
-	if bone_idx == -1:
-		return
+	# Usar lerp para suavizar movimiento global
+	model.global_position = model.global_position.lerp(base_pos, movement_smoothing)
 	
-	# Calcular dirección del hueso
-	var bone_vec = end - start
-	
-	# Verificar que el vector es válido (longitud mínima)
-	if bone_vec.length() < 0.01:
-		# Usar última rotación válida si existe
-		if last_valid_rotations[player_key].has(bone_name):
-			skeleton.set_bone_pose_rotation(bone_idx, last_valid_rotations[player_key][bone_name])
-		return
-	
-	var direction = bone_vec.normalized()
-	
-	# Verificar que no hay NaN
-	if is_nan(direction.x) or is_nan(direction.y) or is_nan(direction.z):
-		if last_valid_rotations[player_key].has(bone_name):
-			skeleton.set_bone_pose_rotation(bone_idx, last_valid_rotations[player_key][bone_name])
-		return
-	
-	# Calcular rotación desde la pose de reposo
-	var target_quat = quat_from_to(rest_dir, direction)
-	
-	# Verificar quaternion válido
-	if is_nan(target_quat.x) or is_nan(target_quat.y) or is_nan(target_quat.z) or is_nan(target_quat.w):
-		if last_valid_rotations[player_key].has(bone_name):
-			skeleton.set_bone_pose_rotation(bone_idx, last_valid_rotations[player_key][bone_name])
-		return
-	
-	# Obtener rotación actual
-	var current_quat = skeleton.get_bone_pose_rotation(bone_idx)
-	
-	# Verificar que la rotación actual es válida
-	if is_nan(current_quat.x) or is_nan(current_quat.y) or is_nan(current_quat.z) or is_nan(current_quat.w):
-		current_quat = Quaternion.IDENTITY
-	
-	# Aplicar suavizado
-	var smoothed = current_quat.slerp(target_quat, rotation_smoothing)
-	
-	# Guardar como última rotación válida
-	last_valid_rotations[player_key][bone_name] = smoothed
-	
-	skeleton.set_bone_pose_rotation(bone_idx, smoothed)
+	# Aplicar escala adicional del modelo
+	var safe_model_scale = model_scale
+	if safe_model_scale <= 0.001:
+		safe_model_scale = 1.0 
+		
+	var final_scale = normal_scale * scale_factor * safe_model_scale
+	model.scale = Vector3(final_scale, final_scale, final_scale)
 
-func quat_from_to(from: Vector3, to: Vector3) -> Quaternion:
-	"""Calcula quaternion para rotar 'from' hacia 'to' de forma segura"""
-	from = from.normalized()
-	to = to.normalized()
+	# Calcular posiciones 3D de todos los keypoints
+	var positions = []
+	for i in range(KEYPOINTS.size()):
+		var lm = pose[i]
+		var x = (lm["x"] - 0.5) * 2.0
+		var y = (0.5 - lm["y"]) * 2.0
+		var z = 0.0
+		if "z" in lm:
+			z = -lm["z"] * depth_scale
+		
+		# Invertir X si modo espejo
+		if mirror_mode:
+			x = -x
+		
+		positions.append(Vector3(x, y, z))
+
+	# Animar el esqueleto
+	if skeleton != null:
+		animate_skeleton(skeleton, positions)
+
+func animate_skeleton(skeleton: Skeleton3D, positions: Array):
+	# Usar un orden específico para respetar la jerarquía
+	for limb_name in UPDATE_ORDER:
+		var bone_name = BONE_NAMES[limb_name]
+		var bone_idx = skeleton.find_bone(bone_name)
+		
+		# Si no encuentra el hueso con el nombre principal, probar el alternativo
+		if bone_idx < 0:
+			bone_name = BONE_NAMES_ES[limb_name]
+			bone_idx = skeleton.find_bone(bone_name)
+		
+		if bone_idx < 0:
+			continue
+		
+		var indices = LIMB_INDICES[limb_name]
+		var start_pos = positions[indices[0]]
+		var end_pos = positions[indices[1]]
+		
+		# Dirección objetivo del hueso en espacio del modelo
+		var target_world_dir = (end_pos - start_pos).normalized()
+		
+		if target_world_dir.length() < 0.001:
+			continue
+		
+		# Obtener la transformación global (Model Space) del padre
+		var parent_idx = skeleton.get_bone_parent(bone_idx)
+		var parent_global_basis = Basis.IDENTITY
+		if parent_idx >= 0:
+			parent_global_basis = skeleton.get_bone_global_pose(parent_idx).basis
+		
+		# Convertir la dirección objetivo al espacio local del padre
+		var target_local_dir = (parent_global_basis.inverse() * target_world_dir).normalized()
+		
+		# Obtener la pose de descanso (Rest Pose)
+		var rest_pose = skeleton.get_bone_rest(bone_idx)
+		# Asumimos que el hueso apunta hacia Y+ en su espacio local (estándar Blender)
+		var rest_dir = rest_pose.basis.y.normalized()
+		
+		# Calcular la rotación necesaria para alinear la dirección de reposo con la objetivo
+		var rotation_quat = rotation_from_to(rest_dir, target_local_dir)
+		
+		# Aplicar esta rotación a la base de reposo
+		var final_basis = Basis(rotation_quat) * rest_pose.basis
+		
+		# Aplicar con suavizado (Slerp)
+		var current_pose = skeleton.get_bone_pose(bone_idx)
+		var current_quat = current_pose.basis.get_rotation_quaternion()
+		var target_quat = final_basis.get_rotation_quaternion()
+		
+		var smoothed_quat = current_quat.slerp(target_quat, 0.5)
+		
+		skeleton.set_bone_pose(bone_idx, Transform3D(Basis(smoothed_quat), current_pose.origin))
+
+func rotation_from_to(from_dir: Vector3, to_dir: Vector3) -> Quaternion:
+	from_dir = from_dir.normalized()
+	to_dir = to_dir.normalized()
 	
-	var dot = from.dot(to)
-	dot = clamp(dot, -1.0, 1.0)
+	var dot = from_dir.dot(to_dir)
 	
-	# Vectores casi iguales
 	if dot > 0.9999:
 		return Quaternion.IDENTITY
-	
-	# Vectores opuestos - rotar 180° alrededor de un eje perpendicular
-	if dot < -0.9999:
-		var axis = Vector3.FORWARD.cross(from)
-		if axis.length_squared() < 0.0001:
-			axis = Vector3.UP.cross(from)
-		return Quaternion(axis.normalized(), PI)
-	
-	# Caso normal
-	var axis = from.cross(to)
-	if axis.length_squared() < 0.0001:
-		return Quaternion.IDENTITY
-	
-	axis = axis.normalized()
-	var angle = acos(dot)
-	
-	return Quaternion(axis, angle)
+	elif dot < -0.9999:
+		var ortho = Vector3(0, 0, 1) if abs(from_dir.z) < 0.9 else Vector3(0, 1, 0)
+		var axis = from_dir.cross(ortho).normalized()
+		return Quaternion(axis, PI)
+	else:
+		var axis = from_dir.cross(to_dir).normalized()
+		var angle = acos(clamp(dot, -1.0, 1.0))
+		return Quaternion(axis, angle)
 
 func apply_color_to_player(player: Node, color: Color):
 	apply_color_recursive(player, color)
