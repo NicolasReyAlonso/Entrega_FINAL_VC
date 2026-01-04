@@ -1,7 +1,8 @@
-[gd_scene load_steps=38 format=3 uid="uid://bnl20wr3lqhow"]
+[gd_scene load_steps=39 format=3 uid="uid://bnl20wr3lqhow"]
 
 [ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://scenes/mainscript.gd" id="1_ki6c0"]
 [ext_resource type="PackedScene" uid="uid://hkb6si4cedgx" path="res://maincharrigged.blend" id="2_8ifl6"]
+[ext_resource type="PackedScene" uid="uid://bnagcupcutaa7" path="res://assets/models/Eleven/Eleven.glb" id="2_jmmcx"]
 [ext_resource type="Texture2D" uid="uid://cuxom4sfirpee" path="res://kloppenheim_06_puresky_4k.exr" id="5_1jq6i"]
 [ext_resource type="AudioStream" uid="uid://db4dgjynruss5" path="res://assets/music/turiruriru-01.mp3" id="5_w16ng"]
 [ext_resource type="Shader" uid="uid://dgdkjtojsmbhu" path="res://assets/shaders/toon.gdshader" id="6_fp4eh"]
@@ -136,7 +137,7 @@ shader_parameter/outline_color = Color(0, 0, 0, 1)
 
 [node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer", "nodevec")]
 script = ExtResource("1_ki6c0")
-eleven_scene = ExtResource("14_vdgl5")
+eleven_scene = ExtResource("2_jmmcx")
 audioStreamPlayer = NodePath("AudioStreamPlayer3D")
 nodevec = NodePath("Humans")
 model_scale = 0.2
