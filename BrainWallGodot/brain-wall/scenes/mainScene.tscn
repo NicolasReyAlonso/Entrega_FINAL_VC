@@ -12,7 +12,7 @@
 [ext_resource type="Script" uid="uid://blisl35nko52s" path="res://scenes/wall.gd" id="9_1xypn"]
 [ext_resource type="Script" uid="uid://sgh6f385n4lf" path="res://scenes/character_body_3d.gd" id="10_2n1xb"]
 [ext_resource type="ArrayMesh" uid="uid://0omb6vj0e82b" path="res://assets/models/Coliseum.obj" id="14_jmmcx"]
-[ext_resource type="PackedScene" uid="uid://1q5wn6agbify" path="res://assets/models/Eleven/eleven.tscn" id="14_vdgl5"]
+[ext_resource type="PackedScene" uid="uid://1q5wn6agbify" path="res://assets/Characters/eleven.tscn" id="14_vdgl5"]
 [ext_resource type="Texture2D" uid="uid://dysayoi4g77em" path="res://assets/models/Colitext.png" id="15_vdgl5"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3tio3"]
@@ -135,12 +135,10 @@ shader = ExtResource("7_3tio3")
 shader_parameter/outline_width = 0.03
 shader_parameter/outline_color = Color(0, 0, 0, 1)
 
-[node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer", "nodevec")]
+[node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer")]
 script = ExtResource("1_ki6c0")
-eleven_scene = ExtResource("2_jmmcx")
+player_scene = ExtResource("2_jmmcx")
 audioStreamPlayer = NodePath("AudioStreamPlayer3D")
-nodevec = NodePath("Humans")
-model_scale = 0.2
 
 [node name="CameraPlane" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.994259, 0, 0, 0, 0.994259, 0, 0, 0, 0.994259, -4.1799717, 0, 0)
