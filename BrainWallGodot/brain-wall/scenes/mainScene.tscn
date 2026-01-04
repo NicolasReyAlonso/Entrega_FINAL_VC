@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://bnl20wr3lqhow"]
+[gd_scene load_steps=38 format=3 uid="uid://bnl20wr3lqhow"]
 
 [ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://scenes/mainscript.gd" id="1_ki6c0"]
 [ext_resource type="PackedScene" uid="uid://hkb6si4cedgx" path="res://maincharrigged.blend" id="2_8ifl6"]
@@ -13,6 +13,7 @@
 [ext_resource type="PackedScene" uid="uid://bmmg2remx0ygr" path="res://assets/models/Eleven/eleven.tscn" id="14_hnm5q"]
 [ext_resource type="ArrayMesh" uid="uid://0omb6vj0e82b" path="res://assets/models/Coliseum.obj" id="14_jmmcx"]
 [ext_resource type="PackedScene" uid="uid://bsdlydvjsdnqr" path="res://assets/models/Eleven/Eleven.glb" id="14_vdgl5"]
+[ext_resource type="PackedScene" uid="uid://1q5wn6agbify" path="res://assets/models/Eleven/eleven.tscn" id="14_vdgl5"]
 [ext_resource type="Texture2D" uid="uid://dysayoi4g77em" path="res://assets/models/Colitext.png" id="15_vdgl5"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3tio3"]
@@ -137,9 +138,10 @@ shader_parameter/outline_color = Color(0, 0, 0, 1)
 
 [node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer")]
 script = ExtResource("1_ki6c0")
-player_scene = ExtResource("14_vdgl5")
-offset = Vector3(0, 2, 0)
+eleven_scene = ExtResource("14_vdgl5")
 audioStreamPlayer = NodePath("AudioStreamPlayer3D")
+nodevec = NodePath("Humans")
+model_scale = 0.2
 
 [node name="CameraPlane" type="MeshInstance3D" parent="."]
 transform = Transform3D(0.994259, 0, 0, 0, 0.994259, 0, 0, 0, 0.994259, -4.1799717, 0, 0)
@@ -156,7 +158,7 @@ transform = Transform3D(65.57431, 0, 0, 0, 1, 0, 0, 0, 114.70263, 0.20365024, 0,
 mesh = SubResource("BoxMesh_dmtm4")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.96316254, 0.26891983, 0, -0.26891983, 0.96316254, 0, 0.83211446, 2.6597579)
+transform = Transform3D(1, 0, 0, 0, 0.96316254, 0.26891983, 0, -0.26891983, 0.96316254, 0, 1.3141379, 2.91712)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.59291244, 0.48824963, -0.640365, -0.11281077, 0.8377407, 0.5342885, 0.797326, -0.24454623, 0.5517866, 0, 5, 0)
