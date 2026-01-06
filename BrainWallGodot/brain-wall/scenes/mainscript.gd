@@ -12,6 +12,11 @@ extends Node3D
 var socket := WebSocketPeer.new()
 var players_data: Array = []
 var players: Array = []  # Instancias de los personajes
+var wall_generator: Node3D
+var pose_evaluator: Node3D
+var score: int = 0
+var lives: int = 3
+var current_target_pose: int = 0
 
 # Almacenar últimas rotaciones válidas para evitar espasmos
 var last_valid_rotations: Dictionary = {}
@@ -40,27 +45,52 @@ func _ready():
 	print("Jugador 1: ", character1)
 	print("Jugador 2: ", character2)
 	
-	# Cargar personaje 1
+	# ===== CREAR PLATAFORMA =====
+	create_platform()
+	
+	# ===== CREAR CÁMARA =====
+	create_camera()
+	
+	# ===== CREAR ILUMINACIÓN =====
+	create_lighting()
+	
+	# ===== CARGAR PERSONAJES =====
 	load_character(character1)
 	if player_scene:
 		var player1 = player_scene.instantiate()
 		player1.scale = Vector3.ONE * player_scale
-		player1.position = Vector3(-1, 0, 0)
+		player1.position = Vector3(-2, 1, 0)
 		add_child(player1)
 		players.append(player1)
 		apply_color_to_player(player1, PLAYER_COLORS[0])
 		print("Jugador 1 instanciado: ", character1)
 	
-	# Cargar personaje 2
 	load_character(character2)
 	if player_scene:
 		var player2 = player_scene.instantiate()
 		player2.scale = Vector3.ONE * player_scale
-		player2.position = Vector3(1, 0, 0)
+		player2.position = Vector3(2, 1, 0)
 		add_child(player2)
 		players.append(player2)
 		apply_color_to_player(player2, PLAYER_COLORS[1])
 		print("Jugador 2 instanciado: ", character2)
+	
+	# ===== INICIAR GENERADOR DE PAREDES =====
+	wall_generator = Node3D.new()
+	wall_generator.name = "WallGenerator"
+	add_child(wall_generator)
+	
+	# Script de generación de paredes
+	var wall_gen_script = load("res://scenes/WallGenerator.gd")
+	if wall_gen_script:
+		wall_generator.set_script(wall_gen_script)
+	
+	# ===== CREAR HUD =====
+	var hud = CanvasLayer.new()
+	var hud_script = load("res://scenes/GameHUD.gd")
+	if hud_script:
+		hud.set_script(hud_script)
+	add_child(hud)
 	
 	var err = socket.connect_to_url("ws://localhost:8765")
 	if err != OK:
@@ -70,6 +100,44 @@ func _ready():
 		audioStreamPlayer.play()
 	
 	set_process(true)
+
+func create_platform():
+	"""Crea la plataforma donde están los jugadores"""
+	var platform = MeshInstance3D.new()
+	var mesh = BoxMesh.new()
+	mesh.size = Vector3(10, 0.5, 5)
+	platform.mesh = mesh
+	
+	var material = StandardMaterial3D.new()
+	material.albedo_color = Color.DARK_GRAY
+	platform.set_surface_override_material(0, material)
+	
+	platform.position = Vector3(0, 0, 0)
+	add_child(platform)
+	
+	# Colisión de la plataforma
+	var platform_collision = StaticBody3D.new()
+	var shape = CollisionShape3D.new()
+	var box_shape = BoxShape3D.new()
+	box_shape.size = Vector3(10, 0.5, 5)
+	shape.shape = box_shape
+	platform_collision.add_child(shape)
+	platform_collision.position = Vector3(0, 0, 0)
+	add_child(platform_collision)
+
+func create_camera():
+	"""Crea la cámara del juego"""
+	var camera = Camera3D.new()
+	camera.position = Vector3(0, 2, 8)
+	camera.look_at(Vector3(0, 1, 0), Vector3.UP)
+	add_child(camera)
+
+func create_lighting():
+	"""Crea la iluminación"""
+	var light = DirectionalLight3D.new()
+	light.position = Vector3(5, 10, 5)
+	light.shadow_enabled = true
+	add_child(light)
 
 func playBasicMusic():
 	var music_player = audioStreamPlayer
@@ -113,8 +181,65 @@ func _process(delta):
 			if "poses" in parsed:
 				players_data = parsed["poses"]
 				update_all_players()
+	
+	# Actualizar la generación de paredes
+	update_wall_system(delta)
+
+func update_wall_system(delta: float):
+	"""Actualiza el sistema de paredes y colisiones"""
+	if not wall_generator:
+		return
+	
+	# Verificar colisiones con las paredes
+	var walls = wall_generator.get_children()
+	for wall in walls:
+		# Detectar colisión cuando la pared está cerca de los jugadores (posición Z)
+		if wall.position.z < 1.0 and wall.position.z > -1.0:
+			check_wall_collision(wall)
+
+func check_wall_collision(wall: Node3D):
+	"""Verifica si los jugadores colisionan con la pared"""
+	var wall_passed = false
+	
+	for i in range(players.size()):
+		var player = players[i]
+		var player_pos = player.global_position
+		
+		# Distancia horizontal del jugador
+		var dist_x = abs(player_pos.x)
+		var dist_y = player_pos.y
+		
+		# Agujeros de la pared (aproximado basado en postura)
+		var hole_left = -2.5
+		var hole_right = 2.5
+		var hole_top = 3.5
+		var hole_bottom = 0.5
+		
+		# Verificar si el jugador está dentro del agujero
+		var in_hole = (player_pos.x >= hole_left and player_pos.x <= hole_right and
+					   player_pos.y >= hole_bottom and player_pos.y <= hole_top)
+		
+		if not in_hole:
+			lives -= 1
+			print("¡Choque! Vidas restantes: ", lives)
+			if lives <= 0:
+				game_over()
+		else:
+			wall_passed = true
+			score += 10
+			print("¡Pasaste! Puntuación: ", score)
+	
+	wall.queue_free()
+
+
+func game_over():
+	"""Final del juego"""
+	print("GAME OVER! Puntuación final: ", score)
+	var scene_name = get_scene_file_path()
+	get_tree().reload_current_scene()
 
 func update_all_players():
+	"""Actualiza poses de todos los jugadores desde players_data"""
 	while players.size() < players_data.size():
 		add_player()
 	

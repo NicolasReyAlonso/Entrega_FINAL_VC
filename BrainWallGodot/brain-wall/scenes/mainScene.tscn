@@ -1,4 +1,4 @@
-[gd_scene load_steps=39 format=3 uid="uid://bnl20wr3lqhow"]
+[gd_scene load_steps=38 format=3 uid="uid://bnl20wr3lqhow"]
 
 [ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://scenes/mainscript.gd" id="1_ki6c0"]
 [ext_resource type="PackedScene" uid="uid://hkb6si4cedgx" path="res://maincharrigged.blend" id="2_8ifl6"]
@@ -9,11 +9,12 @@
 [ext_resource type="Shader" uid="uid://dvigqnwwgftj1" path="res://assets/shaders/outline.gdshader" id="7_3tio3"]
 [ext_resource type="Script" uid="uid://c1hsvx452qj01" path="res://scenes/cube.gd" id="8_dmtm4"]
 [ext_resource type="Shader" uid="uid://cb1agqsu2lkix" path="res://assets/shaders/toon_water.gdshader" id="8_jmmcx"]
-[ext_resource type="Script" uid="uid://blisl35nko52s" path="res://scenes/wall.gd" id="9_1xypn"]
 [ext_resource type="Script" uid="uid://sgh6f385n4lf" path="res://scenes/character_body_3d.gd" id="10_2n1xb"]
 [ext_resource type="ArrayMesh" uid="uid://0omb6vj0e82b" path="res://assets/models/Coliseum.obj" id="14_jmmcx"]
 [ext_resource type="PackedScene" uid="uid://1q5wn6agbify" path="res://assets/Characters/eleven.tscn" id="14_vdgl5"]
+[ext_resource type="Script" uid="uid://dweg4q7v3o1j2" path="res://scenes/PoseEvaluator.gd" id="15_hnm5q"]
 [ext_resource type="Texture2D" uid="uid://dysayoi4g77em" path="res://assets/models/Colitext.png" id="15_vdgl5"]
+[ext_resource type="Script" uid="uid://byt1i651ojvvw" path="res://scenes/WallGenerator.gd" id="16_0eirs"]
 
 [sub_resource type="FastNoiseLite" id="FastNoiseLite_3tio3"]
 frequency = 0.0731
@@ -105,12 +106,6 @@ adjustment_color_correction = SubResource("CurveTexture_1s0h2")
 [sub_resource type="BoxShape3D" id="BoxShape3D_al2iq"]
 size = Vector3(10, 1, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_2n1xb"]
-size = Vector3(2, 2, 0.2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_fp4eh"]
-size = Vector3(2, 2, 0.2)
-
 [sub_resource type="BoxMesh" id="BoxMesh_fp4eh"]
 size = Vector3(2, 2, 0.2)
 
@@ -155,7 +150,7 @@ transform = Transform3D(65.57431, 0, 0, 0, 1, 0, 0, 0, 114.70263, 0.20365024, 0,
 mesh = SubResource("BoxMesh_dmtm4")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 0.96316254, 0.26891983, 0, -0.26891983, 0.96316254, 0, 1.3141379, 2.91712)
+transform = Transform3D(-0.9878164, -0.041850366, 0.14989115, -7.723215e-09, 0.9631626, 0.26891983, -0.15562394, 0.2656434, -0.95142776, 0.62715435, 1.4327626, -5.844991)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.59291244, 0.48824963, -0.640365, -0.11281077, 0.8377407, 0.5342885, 0.797326, -0.24454623, 0.5517866, 0, 5, 0)
@@ -173,20 +168,6 @@ script = ExtResource("8_dmtm4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D2"]
 shape = SubResource("BoxShape3D_al2iq")
-
-[node name="Wall" type="Node3D" parent="."]
-transform = Transform3D(0.994259, 0, 0, 0, 0.994259, 0, 0, 0, 0.994259, -4.1799717, 0, 0)
-script = ExtResource("9_1xypn")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall"]
-transform = Transform3D(0.049494725, 0, -0.99877447, 0, 1, 0, 0.99877447, 0, 0.049494725, -2.7164564, 0.46856135, 2.675354)
-mesh = SubResource("BoxMesh_2n1xb")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Wall"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall/StaticBody3D"]
-transform = Transform3D(-0.007382636, 0, -0.99997276, 0, 1, 0, 0.99997276, 0, -0.007382636, 0, 0, 0)
-shape = SubResource("BoxShape3D_fp4eh")
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
 transform = Transform3D(0.99995273, 0, 0.009721329, 0, 1, 0, -0.009721329, 0, 0.99995273, 8.598338, 0.15638876, -0.48185122)
@@ -225,3 +206,9 @@ transform = Transform3D(0.05, 0, 0, 0, 0.05, 0, 0, 0, 0.05, -0.4223467, 0.553270
 
 [node name="Humans" type="Node3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.76, -0.83290803)
+
+[node name="PoseEvaluator" type="Node3D" parent="."]
+script = ExtResource("15_hnm5q")
+
+[node name="WallGenerator" type="Node3D" parent="."]
+script = ExtResource("16_0eirs")
