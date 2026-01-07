@@ -103,13 +103,14 @@ Desarrollar un sistema que evalúe posturas corporales completas en tiempo real,
 
 \section{Tecnologías Utilizadas}
 
-\subsection{Motor Gráfico: Godot 4.x}
+\subsection{Motor Gráfico: Godot 4.5}
 Godot es un motor de juegos de código abierto que proporciona:
 \begin{itemize}
     \item Soporte para Node3D y MeshInstance3D para gráficos 3D
     \item Sistema de materiales y shaders avanzados
     \item Gestión de escenas y nodos jerárquicos
     \item GDScript para scripting en el motor
+    \item Sistema de colisiones 3D integrado
 \end{itemize}
 
 \subsection{Detección de Pose: MediaPipe}
@@ -129,13 +130,25 @@ Se utilizó Blender para:
     \item Aplicar materiales y texturas
 \end{itemize}
 
-\subsection{GDScript}
+\subsection{Lenguajes de Programación}
+
+\subsubsection{GDScript}
 Lenguaje de scripting nativo de Godot utilizado para:
 \begin{itemize}
     \item Lógica del juego
     \item Comunicación WebSocket con MediaPipe
-    \item Generación de geometría de paredes
     \item Control de animaciones
+\end{itemize}
+
+\subsubsection{Python}
+Lenguaje de programación utilizado para procesamiento de datos y scripts complementarios.
+
+\subsection{Entorno de Programación: Anaconda}
+Anaconda es una distribución de Python que proporciona:
+\begin{itemize}
+    \item Gestión de paquetes y dependencias
+    \item Entornos virtuales aislados
+    \item Herramientas para ciencia de datos
 \end{itemize}
 
 \section{Arquitectura del Sistema}
@@ -252,25 +265,14 @@ Sistema de generación y movimiento de paredes con agujeros en forma de figuras 
     \item \textbf{JUMP}: Saltando
 \end{enumerate}
 
-\subsubsection{Generación de Paredes}
+\\subsection{Sistema de Paredes}
 
-Cada pared es un Node3D que contiene:
-\begin{itemize}
-    \item \textbf{Posición inicial}: (0, 2, 20)
-    \item \textbf{Movimiento}: -5.0 unidades/segundo en eje Z
-    \item \textbf{Geometry}: Malla generada con SurfaceTool
-    \item \textbf{Material}: StandardMaterial3D azul transparente (0.2, 0.2, 0.8, 0.8)
-    \item \textbf{Limpieza}: Se elimina cuando z < -30
-\end{itemize}
-
-\subsubsection{Geometría de Paredes}
-
-Las paredes se generan usando SurfaceTool que:
-\begin{itemize}
-    \item Crea rectángulos sólidos en posiciones específicas
-    \item Deja agujeros vacíos donde el personaje debe pasar
-    \item Utiliza la función add\_rect() para construir la geometría
-    \item Genera normales automáticamente con generate\_normals()
+Las paredes son elementos dinámicos que se presentan con diferentes formas correspondientes a las 7 posturas disponibles. Cada pared incluye:
+\\begin{itemize}
+    \\item Forma adaptada a la postura requerida
+    \\item Colisiones manejadas por el motor de Godot
+    \\item Material visual con transparencia para claridad
+    \\item Movimiento continuo hacia los jugadores
 \end{itemize}
 
 \subsection{4. PoseReceiver.gd}
@@ -327,22 +329,22 @@ Sistema de interfaz de usuario que muestra:
 
 \subsection{Sistema de Colisión}
 
-Las paredes se validan cuando:
+El sistema de colisiones está implementado mediante el motor de colisiones 3D integrado de Godot, que gestiona automáticamente:
 \begin{itemize}
-    \item Posición Z de la pared está entre 1.0 y -1.0
-    \item Sistema verifica si el jugador está dentro del área del agujero
-    \item Si está dentro: +10 puntos
-    \item Si está fuera: -1 vida
+    \item Detección de colisiones entre los personajes y las paredes
+    \item Validación de paso correcto a través del agujero
+    \item Otorgamiento de puntos (+10) si la colisión no ocurre
+    \item Penalización de vidas (-1) si hay colisión
 \end{itemize}
 
 \subsection{Animación de Personajes}
 
-Cada personaje tiene un Skeleton3D con 8 huesos que se animan:
+Cada personaje tiene un Skeleton3D que se anima mediante los datos de pose capturados:
 \begin{itemize}
-    \item Se capturan rotaciones de MediaPipe
-    \item Se interpolan las rotaciones con slerp() para suavidad
-    \item Se actualiza cada frame según los datos de pose
-    \item Los huesos se mapean a puntos de referencia de MediaPipe
+    \item Se capturan datos de MediaPipe en tiempo real
+    \item Se interpolan las rotaciones para suavidad en las transiciones
+    \item Se actualiza cada frame según los puntos de referencia detectados
+    \item El esqueleto se deforma automáticamente siguiendo el movimiento del jugador
 \end{itemize}
 
 \subsection{Generación de Paredes}
@@ -350,9 +352,7 @@ Cada personaje tiene un Skeleton3D con 8 huesos que se animan:
 \begin{itemize}
     \item \textbf{Intervalo}: Cada 3 segundos se genera una nueva pared
     \item \textbf{Postura}: Se selecciona aleatoriamente de las 7 disponibles
-    \item \textbf{Posición inicial}: (0, 2, 20) - frente al jugador
-    \item \textbf{Movimiento}: -5.0 unidades/segundo hacia el jugador
-    \item \textbf{Limpieza}: Se elimina cuando sale del rango visible (z < -30)
+    \\item \\textbf{Movimiento}: -5.0 unidades/segundo hacia el jugador
 \end{itemize}
 
 \section{Detalles Técnicos}
@@ -375,21 +375,7 @@ Ejemplo de mensaje recibido:
 }
 \end{verbatim}
 
-\subsection{Mapeo de Huesos}
-
-\begin{verbatim}
-MediaPipe → Skeleton3D
-11 (Left Shoulder) → bone_0
-12 (Right Shoulder) → bone_1
-13 (Left Elbow) → bone_2
-14 (Right Elbow) → bone_3
-15 (Left Wrist) → bone_4
-16 (Right Wrist) → bone_5
-23 (Left Hip) → bone_6
-24 (Right Hip) → bone_7
-\end{verbatim}
-
-\subsection{Generación de Geometría}
+\subsection{Sistemas de Generación Dinámica}
 
 Las paredes se generan con SurfaceTool:
 
