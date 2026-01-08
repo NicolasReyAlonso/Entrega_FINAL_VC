@@ -33,6 +33,8 @@ size = Vector3(0.1875, 0.11895752, 0.2576599)
 
 [node name="Area3D" type="Area3D" parent="." index="1"]
 transform = Transform3D(4.320053, 0, 0, 0, 0, -4.320053, 0, 4.320053, 0, 0, 0, 0)
+monitoring = true
+monitorable = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" index="0"]
 transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6293729, -0.07281493, -0.24153623)

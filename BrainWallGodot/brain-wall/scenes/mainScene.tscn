@@ -1,16 +1,14 @@
-[gd_scene load_steps=39 format=3 uid="uid://bnl20wr3lqhow"]
+[gd_scene load_steps=35 format=3 uid="uid://bnl20wr3lqhow"]
 
-[ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://scenes/mainscript.gd" id="1_ki6c0"]
-[ext_resource type="PackedScene" uid="uid://hkb6si4cedgx" path="res://maincharrigged.blend" id="2_8ifl6"]
+[ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://Scripts/mainscript.gd" id="1_ki6c0"]
 [ext_resource type="PackedScene" uid="uid://bnagcupcutaa7" path="res://assets/models/Eleven/Eleven.glb" id="2_jmmcx"]
 [ext_resource type="Texture2D" uid="uid://cuxom4sfirpee" path="res://kloppenheim_06_puresky_4k.exr" id="5_1jq6i"]
 [ext_resource type="AudioStream" uid="uid://db4dgjynruss5" path="res://assets/music/turiruriru-01.mp3" id="5_w16ng"]
 [ext_resource type="Shader" uid="uid://dgdkjtojsmbhu" path="res://assets/shaders/toon.gdshader" id="6_fp4eh"]
 [ext_resource type="Shader" uid="uid://dvigqnwwgftj1" path="res://assets/shaders/outline.gdshader" id="7_3tio3"]
-[ext_resource type="Script" uid="uid://c1hsvx452qj01" path="res://scenes/cube.gd" id="8_dmtm4"]
+[ext_resource type="Script" uid="uid://c1hsvx452qj01" path="res://Scripts/cube.gd" id="8_dmtm4"]
 [ext_resource type="Shader" uid="uid://cb1agqsu2lkix" path="res://assets/shaders/toon_water.gdshader" id="8_jmmcx"]
-[ext_resource type="Script" uid="uid://blisl35nko52s" path="res://scenes/wall.gd" id="9_1xypn"]
-[ext_resource type="Script" uid="uid://sgh6f385n4lf" path="res://scenes/character_body_3d.gd" id="10_2n1xb"]
+[ext_resource type="Script" uid="uid://sgh6f385n4lf" path="res://Scripts/character_body_3d.gd" id="10_2n1xb"]
 [ext_resource type="ArrayMesh" uid="uid://0omb6vj0e82b" path="res://assets/models/Coliseum.obj" id="14_jmmcx"]
 [ext_resource type="PackedScene" uid="uid://1q5wn6agbify" path="res://assets/Characters/eleven.tscn" id="14_vdgl5"]
 [ext_resource type="Texture2D" uid="uid://dysayoi4g77em" path="res://assets/models/Colitext.png" id="15_vdgl5"]
@@ -105,12 +103,6 @@ adjustment_color_correction = SubResource("CurveTexture_1s0h2")
 [sub_resource type="BoxShape3D" id="BoxShape3D_al2iq"]
 size = Vector3(10, 1, 1)
 
-[sub_resource type="BoxMesh" id="BoxMesh_2n1xb"]
-size = Vector3(2, 2, 0.2)
-
-[sub_resource type="BoxShape3D" id="BoxShape3D_fp4eh"]
-size = Vector3(2, 2, 0.2)
-
 [sub_resource type="BoxMesh" id="BoxMesh_fp4eh"]
 size = Vector3(2, 2, 0.2)
 
@@ -147,12 +139,6 @@ model_scale = 0.2
 transform = Transform3D(0.994259, 0, 0, 0, 0.994259, 0, 0, 0, 0.994259, -4.1799717, 0, 0)
 mesh = SubResource("PlaneMesh_twn0q")
 
-[node name="maincharrigged" parent="." instance=ExtResource("2_8ifl6")]
-transform = Transform3D(0.16868426, -0.011973067, -0.98559755, 0.070801005, 0.9974901, -9.1790914e-10, 0.9831237, -0.06978129, 0.16910873, -3.1340518, -0.03156799, -0.406374)
-
-[node name="maincharrigged2" parent="." instance=ExtResource("2_8ifl6")]
-transform = Transform3D(-0.0066845356, 0, -0.99997765, 0, 1, 0, 0.99997765, 0, -0.0066845356, -3.1394372, 0, 0.2891082)
-
 [node name="Water" type="MeshInstance3D" parent="."]
 transform = Transform3D(65.57431, 0, 0, 0, 1, 0, 0, 0, 114.70263, 0.20365024, 0, -0.023804307)
 mesh = SubResource("BoxMesh_dmtm4")
@@ -176,20 +162,6 @@ script = ExtResource("8_dmtm4")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D2"]
 shape = SubResource("BoxShape3D_al2iq")
-
-[node name="Wall" type="Node3D" parent="."]
-transform = Transform3D(0.994259, 0, 0, 0, 0.994259, 0, 0, 0, 0.994259, -4.1799717, 0, 0)
-script = ExtResource("9_1xypn")
-
-[node name="MeshInstance3D" type="MeshInstance3D" parent="Wall"]
-transform = Transform3D(0.049494725, 0, -0.99877447, 0, 1, 0, 0.99877447, 0, 0.049494725, -2.7164564, 0.46856135, 2.675354)
-mesh = SubResource("BoxMesh_2n1xb")
-
-[node name="StaticBody3D" type="StaticBody3D" parent="Wall"]
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="Wall/StaticBody3D"]
-transform = Transform3D(-0.007382636, 0, -0.99997276, 0, 1, 0, 0.99997276, 0, -0.007382636, 0, 0, 0)
-shape = SubResource("BoxShape3D_fp4eh")
 
 [node name="CharacterBody3D" type="CharacterBody3D" parent="."]
 transform = Transform3D(0.99995273, 0, 0.009721329, 0, 1, 0, -0.009721329, 0, 0.99995273, 8.598338, 0.15638876, -0.48185122)

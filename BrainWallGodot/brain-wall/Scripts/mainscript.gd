@@ -111,7 +111,7 @@ func _ready():
 func setup_game_manager():
 	"""Configura el Game Manager y la UI"""
 	# Crear instancia del Game Manager
-	var game_manager_script = load("res://scenes/game_manager.gd")
+	var game_manager_script = load("res://Scripts/game_manager.gd")
 	if game_manager_script:
 		game_manager = Node.new()
 		game_manager.name = "GameManager"
@@ -252,22 +252,27 @@ func _on_player_area_entered(other_area: Area3D, player_idx: int):
 	if not game_manager:
 		return
 	
-	# Verificar si es una pared
-	if other_area.has_meta("wall_ref") or other_area.get_parent().name.begins_with("Wall"):
-		var wall_player_idx = other_area.get_meta("player_idx", -1)
-		
-		# Solo procesar si la pared es para este jugador
-		if wall_player_idx == player_idx or wall_player_idx == -1:
-			var wall = other_area.get_meta("wall_ref", other_area.get_parent())
-			var has_passed = false
-			if wall and wall.has_meta("passed"):
-				has_passed = wall.get_meta("passed", false)
-			
-			if not has_passed:
-				if wall:
-					wall.set_meta("passed", true)
-				game_manager.hit_player(player_idx)
-				print("¡COLISIÓN! Jugador ", player_idx + 1, " golpeó una pared")
+	# Verificar si es una pared (Area3D de una pared)
+	var wall = other_area.get_meta("wall_ref", null)
+	if wall == null:
+		# Intentar obtener el padre como pared
+		var parent = other_area.get_parent()
+		if parent and parent.name.begins_with("Wall"):
+			wall = parent
+	
+	if wall == null:
+		return
+	
+	# Verificar si este jugador ya colisionó con esta pared
+	var hit_players = wall.get_meta("hit_players", [])
+	if player_idx in hit_players:
+		return
+	
+	# Registrar la colisión y restar vida
+	hit_players.append(player_idx)
+	wall.set_meta("hit_players", hit_players)
+	game_manager.hit_player(player_idx)
+	print("¡COLISIÓN desde mainscript! Jugador ", player_idx + 1, " golpeó una pared")
 
 func remove_player():
 	if players.is_empty():
