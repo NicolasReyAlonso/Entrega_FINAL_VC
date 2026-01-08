@@ -226,12 +226,52 @@ func add_player():
 	apply_color_to_player(player_instance, PLAYER_COLORS[player_idx % PLAYER_COLORS.size()])
 
 func create_player_collision_area(player: Node3D, player_idx: int) -> Area3D:
-	"""Crea un área de colisión para detectar choques con paredes"""
+	"""Configura las áreas de colisión existentes en el modelo para detectar choques con paredes"""
+	
+	# Buscar todas las Area3D existentes en el modelo
+	var areas_found = find_all_areas_recursive(player)
+	
+	if areas_found.is_empty():
+		# Fallback: crear área básica si no se encuentran áreas en el modelo
+		print("No se encontraron áreas de colisión en el modelo, creando área básica...")
+		return create_fallback_collision_area(player, player_idx)
+	
+	print("Encontradas ", areas_found.size(), " áreas de colisión en el modelo del jugador ", player_idx + 1)
+	
+	# Configurar cada área encontrada con el player_idx
+	var main_area: Area3D = null
+	for area in areas_found:
+		area.set_meta("player_idx", player_idx)
+		# Conectar señal de colisión
+		if not area.area_entered.is_connected(_on_player_area_entered):
+			area.area_entered.connect(_on_player_area_entered.bind(player_idx))
+		
+		# Usar la primera área como referencia principal
+		if main_area == null:
+			main_area = area
+	
+	return main_area
+
+func find_all_areas_recursive(node: Node) -> Array[Area3D]:
+	"""Busca recursivamente todas las Area3D en un nodo"""
+	var areas: Array[Area3D] = []
+	
+	if node is Area3D:
+		areas.append(node)
+	
+	for child in node.get_children():
+		var child_areas = find_all_areas_recursive(child)
+		areas.append_array(child_areas)
+	
+	return areas
+
+func create_fallback_collision_area(player: Node3D, player_idx: int) -> Area3D:
+	"""Crea un área de colisión básica como fallback"""
 	var area = Area3D.new()
 	area.name = "PlayerCollisionArea_" + str(player_idx)
 	area.set_meta("player_idx", player_idx)
 	
-	# Crear forma de colisión (cápsula para el cuerpo)
+	# Crear forma de colisión básica (cápsula para el cuerpo)
 	var collision_shape = CollisionShape3D.new()
 	var capsule = CapsuleShape3D.new()
 	capsule.radius = 0.3
@@ -242,7 +282,6 @@ func create_player_collision_area(player: Node3D, player_idx: int) -> Area3D:
 	area.add_child(collision_shape)
 	player.add_child(area)
 	
-	# Conectar señal de colisión
 	area.area_entered.connect(_on_player_area_entered.bind(player_idx))
 	
 	return area
