@@ -122,8 +122,8 @@ audioStreamPlayer = NodePath("AudioStreamPlayer3D")
 offset = Vector3(0, 0, -5)
 mirror_mode = false
 model_scale = 0.2
-player1_offset = Vector3(-1, 0, 2)
-player2_offset = Vector3(1, 0, 2)
+player1_offset = Vector3(0, 0, 2)
+player2_offset = Vector3(0, 0, 2)
 
 [node name="Water" type="MeshInstance3D" parent="."]
 transform = Transform3D(65.57431, 0, 0, 0, 1, 0, 0, 0, 114.70263, 0.20365024, 0, -0.023804307)
