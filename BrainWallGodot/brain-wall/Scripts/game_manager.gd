@@ -11,10 +11,14 @@ signal wall_passed(player_idx: int, score: int)
 @export var max_lives: int = 3
 @export var wall_speed: float = 1.5
 @export var spawn_interval: float = 6.0
-@export var spawn_distance: float = -12.0  # Distancia Z donde aparecen las paredes
-@export var despawn_distance: float = 5.0  # Distancia Z donde desaparecen
+@export var spawn_distance: float = 12.0  # Distancia Z donde aparecen las paredes (ahora positivo)
+@export var despawn_distance: float = -5.0  # Distancia Z donde desaparecen (ahora negativo)
 @export var wall_scale: Vector3 = Vector3(0.1, 0.1, 0.1)
 @export var wall_height: float = 0  # Altura Y de las paredes
+
+# Offsets para las paredes de cada jugador
+@export var player1_wall_offset: Vector3 = Vector3(-1.0, 0.0, 0.0)  # Offset para la pared del jugador 1
+@export var player2_wall_offset: Vector3 = Vector3(1.0, 0.0, 0.0)   # Offset para la pared del jugador 2
 
 # Estado de los jugadores
 var player_lives: Array[int] = [3, 3]
@@ -90,7 +94,7 @@ func _process(delta: float):
 	update_walls(delta)
 
 func spawn_walls_for_players():
-	"""Genera una pared aleatoria para ambos jugadores"""
+	"""Genera dos paredes aleatorias, una para cada jugador"""
 	if wall_scenes.is_empty():
 		print("No hay paredes disponibles")
 		return
@@ -105,37 +109,45 @@ func spawn_walls_for_players():
 	if not any_alive:
 		return
 	
-	# Seleccionar pared aleatoria
-	var random_wall = wall_scenes[randi() % wall_scenes.size()]
-	var wall_instance = random_wall.instantiate()
+	# Crear una pared para cada jugador
+	var offsets = [player1_wall_offset, player2_wall_offset]
 	
-	# Configurar posición inicial - centrada para que ambos jugadores la enfrenten
-	var spawn_pos = Vector3(
-		0.0,  # Centro en X
-		wall_height,  # Altura Y configurable
-		spawn_distance
-	)
-	wall_instance.global_position = spawn_pos
-	
-	# Rotar para que mire hacia el jugador (hacia +Z)
-	wall_instance.rotation.y = 0
-	
-	# Escalar la pared
-	wall_instance.scale = wall_scale
-	
-	# Añadir metadata (la pared es para todos los jugadores, usamos -1)
-	wall_instance.set_meta("player_idx", -1)
-	wall_instance.set_meta("passed", false)
-	wall_instance.set_meta("hit_players", [])  # Lista de jugadores que ya colisionaron
-	
-	# Configurar detección de colisiones
-	setup_wall_collision(wall_instance)
-	
-	# Añadir a la escena
-	get_tree().current_scene.add_child(wall_instance)
-	active_walls.append(wall_instance)
-	
-	print("Pared spawneada!")
+	for player_idx in range(2):
+		# Solo crear pared si el jugador está vivo
+		if player_lives[player_idx] <= 0:
+			continue
+		
+		# Seleccionar pared aleatoria
+		var random_wall = wall_scenes[randi() % wall_scenes.size()]
+		var wall_instance = random_wall.instantiate()
+		
+		# Configurar posición inicial con el offset del jugador correspondiente
+		var spawn_pos = Vector3(
+			offsets[player_idx].x,  # Offset X del jugador
+			wall_height + offsets[player_idx].y,  # Altura Y + offset Y
+			spawn_distance + offsets[player_idx].z  # Distancia Z + offset Z
+		)
+		wall_instance.global_position = spawn_pos
+		
+		# Rotar para que mire hacia el jugador (hacia -Z ahora)
+		wall_instance.rotation.y = PI  # 180 grados para que mire hacia -Z
+		
+		# Escalar la pared
+		wall_instance.scale = wall_scale
+		
+		# Añadir metadata (cada pared es para un jugador específico)
+		wall_instance.set_meta("player_idx", player_idx)
+		wall_instance.set_meta("passed", false)
+		wall_instance.set_meta("hit_players", [])  # Lista de jugadores que ya colisionaron
+		
+		# Configurar detección de colisiones
+		setup_wall_collision(wall_instance)
+		
+		# Añadir a la escena
+		get_tree().current_scene.add_child(wall_instance)
+		active_walls.append(wall_instance)
+		
+		print("Pared spawneada para jugador ", player_idx + 1, "!")
 
 func setup_wall_collision(wall: Node3D):
 	"""Configura la detección de colisiones en la pared"""
@@ -208,24 +220,34 @@ func update_walls(delta: float):
 			walls_to_remove.append(wall)
 			continue
 		
-		# Mover la pared hacia adelante (hacia el jugador, +Z)
-		wall.global_position.z += wall_speed * delta
+		# Mover la pared hacia adelante (hacia el jugador, ahora -Z)
+		wall.global_position.z -= wall_speed * delta
 		
 		var has_passed = wall.get_meta("passed", false)
+		var wall_player_idx = wall.get_meta("player_idx", -1)
 		
 		# Verificar si la pared ha pasado a los jugadores (sin colisión = punto)
-		if not has_passed and wall.global_position.z > 2.0:
+		if not has_passed and wall.global_position.z < -2.0:
 			wall.set_meta("passed", true)
 			# Los jugadores que no colisionaron ganan puntos
 			var hit_players = wall.get_meta("hit_players", [])
-			for i in range(2):
-				if player_lives[i] > 0 and not (i in hit_players):
-					player_scores[i] += 1
-					wall_passed.emit(i, player_scores[i])
-					print("¡Jugador ", i + 1, " pasó la pared! Score: ", player_scores[i])
+			
+			# Si la pared es para un jugador específico, solo ese jugador puede ganar puntos
+			if wall_player_idx >= 0:
+				if player_lives[wall_player_idx] > 0 and not (wall_player_idx in hit_players):
+					player_scores[wall_player_idx] += 1
+					wall_passed.emit(wall_player_idx, player_scores[wall_player_idx])
+					print("¡Jugador ", wall_player_idx + 1, " pasó la pared! Score: ", player_scores[wall_player_idx])
+			else:
+				# Pared compartida (modo anterior)
+				for i in range(2):
+					if player_lives[i] > 0 and not (i in hit_players):
+						player_scores[i] += 1
+						wall_passed.emit(i, player_scores[i])
+						print("¡Jugador ", i + 1, " pasó la pared! Score: ", player_scores[i])
 		
-		# Eliminar paredes que han salido de la pantalla
-		if wall.global_position.z > despawn_distance:
+		# Eliminar paredes que han salido de la pantalla (ahora comparamos con valor negativo)
+		if wall.global_position.z < despawn_distance:
 			walls_to_remove.append(wall)
 	
 	# Limpiar paredes
