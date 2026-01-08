@@ -1,0 +1,15 @@
+[gd_scene load_steps=3 format=3 uid="uid://b82ubg3n3xolt"]
+
+[ext_resource type="PackedScene" uid="uid://omxblvstb6pj" path="res://assets/Walls/Wall4.glb" id="1_t2qnm"]
+
+[sub_resource type="CylinderShape3D" id="CylinderShape3D_r61no"]
+height = 5.6782837
+radius = 0.6484375
+
+[node name="Wall4" instance=ExtResource("1_t2qnm")]
+
+[node name="Area3D" type="Area3D" parent="." index="1"]
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" index="0"]
+transform = Transform3D(-4.371139e-08, -1, 0, 1, -4.371139e-08, 0, 0, 0, 1, 0, 0.610458, 0)
+shape = SubResource("CylinderShape3D_r61no")
