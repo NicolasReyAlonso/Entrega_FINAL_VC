@@ -1,12 +1,13 @@
-[gd_scene load_steps=11 format=3 uid="uid://oqgf44qrmvam"]
+[gd_scene load_steps=12 format=3 uid="uid://oqgf44qrmvam"]
 
 [ext_resource type="PackedScene" uid="uid://621d2mltkncv" path="res://assets/Walls/Wall2.glb" id="1_qe5wu"]
+[ext_resource type="Material" uid="uid://cieh2it3yxtae" path="res://assets/Walls/Materials/wall_1.tres" id="2_dslo3"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_dslo3"]
-size = Vector3(0.71069336, 0.15734863, 0.46142578)
+size = Vector3(0.65270996, 0.15734863, 0.46142578)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_f62hl"]
-size = Vector3(0.6300049, 0.1459961, 0.9067383)
+size = Vector3(0.5606079, 0.1459961, 0.9067383)
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_5v66j"]
 size = Vector3(0.62939453, 0.14953613, 0.65771484)
@@ -31,17 +32,18 @@ size = Vector3(0.1875, 0.11895752, 0.2576599)
 
 [node name="Wall2" instance=ExtResource("1_qe5wu")]
 
+[node name="Plane" parent="." index="0"]
+surface_material_override/0 = ExtResource("2_dslo3")
+
 [node name="Area3D" type="Area3D" parent="." index="1"]
 transform = Transform3D(4.320053, 0, 0, 0, 0, -4.320053, 0, 4.320053, 0, 0, 0, 0)
-monitoring = true
-monitorable = true
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="Area3D" index="0"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.6293729, -0.07281493, -0.24153623)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, -0.65836465, -0.07281493, -0.24153623)
 shape = SubResource("BoxShape3D_dslo3")
 
 [node name="CollisionShape3D2" type="CollisionShape3D" parent="Area3D" index="1"]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.68608415, -0.07104495, -0.45267037)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0.7207827, -0.07104495, -0.45267037)
 shape = SubResource("BoxShape3D_f62hl")
 
 [node name="CollisionShape3D3" type="CollisionShape3D" parent="Area3D" index="2"]

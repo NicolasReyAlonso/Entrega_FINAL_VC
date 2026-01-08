@@ -1,4 +1,4 @@
-[gd_scene load_steps=28 format=3 uid="uid://g2nkc5owg1uh"]
+[gd_scene load_steps=33 format=3 uid="uid://g2nkc5owg1uh"]
 
 [ext_resource type="Script" uid="uid://c2h7fnj4umygf" path="res://Scripts/mainscript.gd" id="1_ki6c0"]
 [ext_resource type="PackedScene" uid="uid://bnagcupcutaa7" path="res://assets/models/Eleven/Eleven.glb" id="2_jmmcx"]
@@ -73,8 +73,6 @@ adjustment_enabled = true
 adjustment_saturation = 1.3
 adjustment_color_correction = SubResource("CurveTexture_1s0h2")
 
-[sub_resource type="BoxShape3D" id="BoxShape3D_3tio3"]
-
 [sub_resource type="ShaderMaterial" id="ShaderMaterial_0eirs"]
 render_priority = 0
 shader = ExtResource("6_fp4eh")
@@ -91,6 +89,32 @@ shader = ExtResource("7_3tio3")
 shader_parameter/outline_width = 0.03
 shader_parameter/outline_color = Color(0, 0, 0, 1)
 
+[sub_resource type="BoxMesh" id="BoxMesh_vdgl5"]
+
+[sub_resource type="Gradient" id="Gradient_vdgl5"]
+offsets = PackedFloat32Array(0, 0.22033899, 0.779661)
+colors = PackedColorArray(0, 0, 0, 1, 0.5434783, 0.5434783, 0.5434783, 1, 1, 1, 1, 1)
+
+[sub_resource type="FastNoiseLite" id="FastNoiseLite_hnm5q"]
+frequency = 0.0558
+
+[sub_resource type="NoiseTexture2D" id="NoiseTexture2D_0eirs"]
+noise = SubResource("FastNoiseLite_hnm5q")
+color_ramp = SubResource("Gradient_vdgl5")
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_gg62s"]
+albedo_color = Color(0.52422875, 0.37894687, 0.30251092, 1)
+metallic = 0.45
+metallic_specular = 0.0
+normal_enabled = true
+normal_texture = SubResource("NoiseTexture2D_0eirs")
+
+[sub_resource type="ShaderMaterial" id="ShaderMaterial_f44mt"]
+render_priority = 0
+shader = ExtResource("7_3tio3")
+shader_parameter/outline_width = 0.03
+shader_parameter/outline_color = Color(0, 0, 0, 1)
+
 [node name="Node3D" type="Node3D" node_paths=PackedStringArray("audioStreamPlayer")]
 script = ExtResource("1_ki6c0")
 player_scene = ExtResource("2_jmmcx")
@@ -98,13 +122,15 @@ audioStreamPlayer = NodePath("AudioStreamPlayer3D")
 offset = Vector3(0, 0, -5)
 mirror_mode = false
 model_scale = 0.2
+player1_offset = Vector3(-1, 0, 2)
+player2_offset = Vector3(1, 0, 2)
 
 [node name="Water" type="MeshInstance3D" parent="."]
 transform = Transform3D(65.57431, 0, 0, 0, 1, 0, 0, 0, 114.70263, 0.20365024, 0, -0.023804307)
 mesh = SubResource("BoxMesh_dmtm4")
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1, -3.7)
+transform = Transform3D(-1, 0, -8.742278e-08, 0, 1, 0, 8.742278e-08, 0, -1, 0, 1, -4)
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(0.59291244, 0.48824963, -0.640365, -0.11281077, 0.8377407, 0.5342885, 0.797326, -0.24454623, 0.5517866, 0, 5, 0)
@@ -116,12 +142,6 @@ environment = SubResource("Environment_1jq6i")
 
 [node name="AudioStreamPlayer3D" type="AudioStreamPlayer3D" parent="."]
 stream = ExtResource("5_w16ng")
-
-[node name="RigidBody3D3" type="RigidBody3D" parent="."]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0, -2.4981225)
-
-[node name="CollisionShape3D" type="CollisionShape3D" parent="RigidBody3D3"]
-shape = SubResource("BoxShape3D_3tio3")
 
 [node name="Node3D" type="Node3D" parent="."]
 
@@ -210,3 +230,13 @@ texture = ExtResource("14_vdgl5")
 transform = Transform3D(0.9740708, 0, -0.2262433, 0, 1, 0, 0.2262433, 0, 0.9740708, 0.37958735, 0.5578352, -4.645806)
 pixel_size = 0.002
 texture = ExtResource("15_hnm5q")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+transform = Transform3D(5.698479, 0, 0, 0, 0.13957173, 0, 0, 0, 2.0055387, 0, 0, -2.4704554)
+mesh = SubResource("BoxMesh_vdgl5")
+surface_material_override/0 = SubResource("StandardMaterial3D_gg62s")
+
+[node name="MeshInstance3D2" type="MeshInstance3D" parent="MeshInstance3D"]
+mesh = SubResource("BoxMesh_vdgl5")
+skeleton = NodePath("../..")
+surface_material_override/0 = SubResource("ShaderMaterial_f44mt")

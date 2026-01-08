@@ -12,6 +12,11 @@ extends Node3D
 @export var movement_smoothing: float = 0.2      # Suavizado del movimiento
 @export var rotation_smoothing: float = 0.08     # Suavizado de rotación
 
+# Configuración por jugador
+@export var lock_z_movement: bool = true         # Bloquear movimiento en eje Z
+@export var player1_offset: Vector3 = Vector3(-1.0, 0.0, 0.0)  # Offset del jugador 1
+@export var player2_offset: Vector3 = Vector3(1.0, 0.0, 0.0)   # Offset del jugador 2
+
 var socket := WebSocketPeer.new()
 var players_data: Array = []
 var players: Array = []  # Instancias de los personajes
@@ -339,6 +344,9 @@ func update_player(player_idx: int, pose: Array):
 	var model = players[player_idx]
 	var skeleton = players_skeletons[player_idx]
 	
+	# Obtener el offset del jugador correspondiente
+	var player_offset = player1_offset if player_idx == 0 else player2_offset
+	
 	# Posicionar el modelo base
 	var head_y = pose[0]["y"]
 	var left_ankle_y = pose[11]["y"]
@@ -349,40 +357,35 @@ func update_player(player_idx: int, pose: Array):
 	if raw_height < 0.001:
 		raw_height = 0.001
 
-	# --- NUEVA LÓGICA DE MOVIMIENTO Z (Brain Wall) ---
-	# En lugar de escalar el personaje, movemos su posición Z basándonos en la altura (distancia)
-	# raw_height varía aprox entre 0.2 (lejos) y 0.9 (cerca)
-	
-	# Factor de profundidad: Ajustar para que el personaje se mueva lo suficiente
-	var z_distance_factor = 5.0 
-	# Offset base Z: Ajustar para la posición inicial
-	var z_base_offset = 0.0
-	
-	# Calculamos Z: Si raw_height es grande (cerca), Z es positivo (hacia la cámara/muro)
-	# Si raw_height es pequeño (lejos), Z es negativo (hacia el fondo)
-	var z_from_distance = (raw_height - 0.5) * z_distance_factor
-	
 	var hip_left = pose[7]
 	var hip_right = pose[8]
 	var hip_x = ((hip_left["x"] + hip_right["x"]) / 2.0 - 0.5) * 2.0
 	var hip_y = ((0.5 - (hip_left["y"] + hip_right["y"]) / 2.0)) * 2.0
-	var hip_z = 0.0
-	if "z" in hip_left:
-		hip_z = -(hip_left["z"] + hip_right.get("z", 0)) / 2.0 * depth_scale
 
 	# Invertir X si modo espejo está activado
 	if mirror_mode:
 		hip_x = -hip_x
 	
-	var final_z = z_from_distance + hip_z + offset.z + z_base_offset
+	# Calcular Z solo si no está bloqueado
+	var final_z = player_offset.z + offset.z
+	if not lock_z_movement:
+		# Factor de profundidad: Ajustar para que el personaje se mueva lo suficiente
+		var z_distance_factor = 5.0 
+		var z_from_distance = (raw_height - 0.5) * z_distance_factor
+		
+		var hip_z = 0.0
+		if "z" in hip_left:
+			hip_z = -(hip_left["z"] + hip_right.get("z", 0)) / 2.0 * depth_scale
+		
+		final_z += z_from_distance + hip_z
 	
 	# Posición base
 	# Multiplicamos X e Y por un factor fijo para cubrir el área de juego
 	var play_area_scale = 3.0 
 	
 	var base_pos = Vector3(
-		hip_x * play_area_scale,
-		hip_y * play_area_scale + 1.0, # +1.0 para levantar un poco del suelo si es necesario
+		hip_x * play_area_scale + player_offset.x + offset.x,
+		hip_y * play_area_scale + 1.0 + player_offset.y + offset.y,
 		final_z
 	)
 
