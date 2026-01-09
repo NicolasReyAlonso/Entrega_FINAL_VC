@@ -13,7 +13,7 @@ signal wall_passed(player_idx: int, score: int)
 @export var spawn_interval: float = 6.0
 @export var spawn_distance: float = 12.0  # Distancia Z donde aparecen las paredes (ahora positivo)
 @export var despawn_distance: float = -5.0  # Distancia Z donde desaparecen (ahora negativo)
-@export var wall_scale: Vector3 = Vector3(0.2, 0.2, 0.2)
+@export var wall_scale: Vector3 = Vector3(0.17, 0.17, 0.17)
 @export var wall_height: float = 0  # Altura Y de las paredes
 
 # Offsets para las paredes de cada jugador

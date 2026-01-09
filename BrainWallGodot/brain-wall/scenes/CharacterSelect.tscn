@@ -1,8 +1,6 @@
-[gd_scene load_steps=8 format=3 uid="uid://cs861n2lcmysi"]
+[gd_scene load_steps=7 format=3 uid="uid://cs861n2lcmysi"]
 
-[ext_resource type="Script" uid="uid://8c1kqn8ffo1f" path="res://scenes/character_select.gd" id="1_sr2wn"]
-[ext_resource type="AudioStream" uid="uid://63dn2u38ad27" path="res://assets/SoundEffects/soundEffect_buttonHover.ogg" id="2_hover"]
-[ext_resource type="AudioStream" uid="uid://c58ih383nvp84" path="res://assets/SoundEffects/soundEffect_buttonClick.ogg" id="3_click"]
+[ext_resource type="Script" uid="uid://8c1kqn8ffo1f" path="res://Scripts/character_select.gd" id="1_sr2wn"]
 
 [sub_resource type="StyleBoxFlat" id="TituloStyle"]
 bg_color = Color(0.2, 0.2, 0.35, 1)
@@ -13,8 +11,6 @@ corner_radius_bottom_left = 15
 
 [sub_resource type="StyleBoxFlat" id="ButtonStyleSaw"]
 bg_color = Color(0.5, 0.2, 0.2, 1)
-hover_color = Color(0.7, 0.3, 0.3, 1)
-focus_color = Color(0.8, 0.4, 0.4, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -24,8 +20,6 @@ shadow_size = 3
 
 [sub_resource type="StyleBoxFlat" id="ButtonStyleET"]
 bg_color = Color(0.2, 0.5, 0.2, 1)
-hover_color = Color(0.3, 0.7, 0.3, 1)
-focus_color = Color(0.4, 0.8, 0.4, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -35,8 +29,6 @@ shadow_size = 3
 
 [sub_resource type="StyleBoxFlat" id="ButtonStyleEleven"]
 bg_color = Color(0.2, 0.2, 0.6, 1)
-hover_color = Color(0.3, 0.3, 0.8, 1)
-focus_color = Color(0.4, 0.4, 0.9, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -46,8 +38,6 @@ shadow_size = 3
 
 [sub_resource type="StyleBoxFlat" id="ButtonStyleHomer"]
 bg_color = Color(0.8, 0.7, 0.2, 1)
-hover_color = Color(0.9, 0.8, 0.3, 1)
-focus_color = Color(1, 0.9, 0.4, 1)
 corner_radius_top_left = 10
 corner_radius_top_right = 10
 corner_radius_bottom_right = 10
@@ -58,16 +48,28 @@ shadow_size = 3
 [node name="CharacterSelect" type="Control"]
 layout_mode = 3
 anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 script = ExtResource("1_sr2wn")
 
 [node name="ColorRect" type="ColorRect" parent="."]
 layout_mode = 1
 anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 color = Color(0.1, 0.1, 0.15, 1)
 
 [node name="MarginContainer" type="MarginContainer" parent="."]
 layout_mode = 1
 anchors_preset = 15
+anchor_right = 1.0
+anchor_bottom = 1.0
+grow_horizontal = 2
+grow_vertical = 2
 theme_override_constants/margin_left = 80
 theme_override_constants/margin_top = 60
 theme_override_constants/margin_right = 80
@@ -75,58 +77,58 @@ theme_override_constants/margin_bottom = 60
 
 [node name="VBoxPrincipal" type="VBoxContainer" parent="MarginContainer"]
 layout_mode = 2
-alignment = 1
 theme_override_constants/separation = 40
+alignment = 1
 
 [node name="TituloLabel" type="Label" parent="MarginContainer/VBoxPrincipal"]
+custom_minimum_size = Vector2(0, 100)
 layout_mode = 2
-theme_override_font_sizes/font_size = 42
 theme_override_colors/font_color = Color(0.8, 0.8, 1, 1)
+theme_override_font_sizes/font_size = 42
 theme_override_styles/normal = SubResource("TituloStyle")
 text = "Selecciona tu personaje"
-alignment = 2
-custom_minimum_size = Vector2(0, 100)
 
 [node name="Separator" type="HSeparator" parent="MarginContainer/VBoxPrincipal"]
-layout_mode = 2
 custom_minimum_size = Vector2(0, 20)
+layout_mode = 2
 
 [node name="BotonesContainer" type="CenterContainer" parent="MarginContainer/VBoxPrincipal"]
 layout_mode = 2
 
 [node name="GridContainer" type="GridContainer" parent="MarginContainer/VBoxPrincipal/BotonesContainer"]
-columns = 2
+layout_mode = 2
 theme_override_constants/h_separation = 30
 theme_override_constants/v_separation = 30
+columns = 2
 
 [node name="SawButton" type="Button" parent="MarginContainer/VBoxPrincipal/BotonesContainer/GridContainer"]
 custom_minimum_size = Vector2(220, 100)
 layout_mode = 2
-theme_override_styles/normal = SubResource("ButtonStyleSaw")
-theme_override_font_sizes/font_size = 26
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("ButtonStyleSaw")
 text = "SAW"
 
 [node name="ETButton" type="Button" parent="MarginContainer/VBoxPrincipal/BotonesContainer/GridContainer"]
 custom_minimum_size = Vector2(220, 100)
 layout_mode = 2
-theme_override_styles/normal = SubResource("ButtonStyleET")
-theme_override_font_sizes/font_size = 26
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("ButtonStyleET")
 text = "ET"
 
 [node name="ElevenButton" type="Button" parent="MarginContainer/VBoxPrincipal/BotonesContainer/GridContainer"]
 custom_minimum_size = Vector2(220, 100)
 layout_mode = 2
-theme_override_styles/normal = SubResource("ButtonStyleEleven")
-theme_override_font_sizes/font_size = 26
 theme_override_colors/font_color = Color(1, 1, 1, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("ButtonStyleEleven")
 text = "ELEVEN"
 
 [node name="HomerButton" type="Button" parent="MarginContainer/VBoxPrincipal/BotonesContainer/GridContainer"]
 custom_minimum_size = Vector2(220, 100)
 layout_mode = 2
-theme_override_styles/normal = SubResource("ButtonStyleHomer")
-theme_override_font_sizes/font_size = 26
 theme_override_colors/font_color = Color(0.2, 0.2, 0.2, 1)
+theme_override_font_sizes/font_size = 26
+theme_override_styles/normal = SubResource("ButtonStyleHomer")
 text = "HOMER"
