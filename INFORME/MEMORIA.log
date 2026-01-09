@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.1.6)  9 JAN 2026 18:14
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (TeX Live 2023/Debian) (preloaded format=pdflatex 2026.1.6)  9 JAN 2026 18:33
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -1108,19 +1108,19 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 <characters/SAW.png, id=1086, 475.02469pt x 495.35063pt>
 File: characters/SAW.png Graphic file (type png)
 <use characters/SAW.png>
-Package pdftex.def Info: characters/SAW.png  used on input line 1239.
-(pdftex.def)             Requested size: 158.54152pt x 165.32559pt.
+Package pdftex.def Info: characters/SAW.png  used on input line 1225.
+(pdftex.def)             Requested size: 226.48395pt x 236.17833pt.
 <characters/ET.png, id=1087, 441.90094pt x 586.44093pt>
 File: characters/ET.png Graphic file (type png)
 <use characters/ET.png>
-Package pdftex.def Info: characters/ET.png  used on input line 1260.
-(pdftex.def)             Requested size: 158.54152pt x 210.4027pt.
+Package pdftex.def Info: characters/ET.png  used on input line 1243.
+(pdftex.def)             Requested size: 226.48395pt x 300.56633pt.
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1264.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1245.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1264.
-LaTeX Info: Redefining \% on input line 1264.
+LaTeX Info: Redefining \. on input line 1245.
+LaTeX Info: Redefining \% on input line 1245.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1130,11 +1130,31 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-20.80278pt}.
 
 [27 <./characters/SAW.png>]
-<characters/ELEVEN.png, id=1094, 481.8pt x 508.14844pt>
+<characters/ELEVEN.png, id=1095, 481.8pt x 508.14844pt>
 File: characters/ELEVEN.png Graphic file (type png)
 <use characters/ELEVEN.png>
-Package pdftex.def Info: characters/ELEVEN.png  used on input line 1281.
-(pdftex.def)             Requested size: 158.54152pt x 167.20877pt.
+Package pdftex.def Info: characters/ELEVEN.png  used on input line 1261.
+(pdftex.def)             Requested size: 226.48395pt x 238.86856pt.
+File: ulpgc_header.png Graphic file (type png)
+<use ulpgc_header.png>
+Package pdftex.def Info: ulpgc_header.png  used on input line 1263.
+(pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
+LaTeX Info: Redefining \. on input line 1263.
+LaTeX Info: Redefining \% on input line 1263.
+
+
+Package fancyhdr Warning: \headheight is too small (12.0pt): 
+(fancyhdr)                Make it at least 32.80278pt, for example:
+(fancyhdr)                \setlength{\headheight}{32.80278pt}.
+(fancyhdr)                You might also make \topmargin smaller to compensate:
+(fancyhdr)                \addtolength{\topmargin}{-20.80278pt}.
+
+[28 <./characters/ET.png>]
+<characters/HOMER.png, id=1102, 486.31688pt x 501.37312pt>
+File: characters/HOMER.png Graphic file (type png)
+<use characters/HOMER.png>
+Package pdftex.def Info: characters/HOMER.png  used on input line 1279.
+(pdftex.def)             Requested size: 226.48395pt x 233.49565pt.
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
 Package pdftex.def Info: ulpgc_header.png  used on input line 1285.
@@ -1149,36 +1169,13 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                You might also make \topmargin smaller to compensate:
 (fancyhdr)                \addtolength{\topmargin}{-20.80278pt}.
 
-[28 <./characters/ET.png>]
-Underfull \hbox (badness 6493) in paragraph at lines 1296--1297
-[]\T1/cmr/bx/n/12 Características\T1/cmr/m/n/12 : Cuer-po re-chon-cho, co-lor
- []
-
-<characters/HOMER.png, id=1100, 486.31688pt x 501.37312pt>
-File: characters/HOMER.png Graphic file (type png)
-<use characters/HOMER.png>
-Package pdftex.def Info: characters/HOMER.png  used on input line 1302.
-(pdftex.def)             Requested size: 158.54152pt x 163.44925pt.
-File: ulpgc_header.png Graphic file (type png)
-<use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1310.
-(pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1310.
-LaTeX Info: Redefining \% on input line 1310.
-
-Package fancyhdr Warning: \headheight is too small (12.0pt): 
-(fancyhdr)                Make it at least 32.80278pt, for example:
-(fancyhdr)                \setlength{\headheight}{32.80278pt}.
-(fancyhdr)                You might also make \topmargin smaller to compensate:
-(fancyhdr)                \addtolength{\topmargin}{-20.80278pt}.
-
 [29 <./characters/Eleven.png> <./characters/HOMER.png>]
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1368.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1339.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1368.
-LaTeX Info: Redefining \% on input line 1368.
+LaTeX Info: Redefining \. on input line 1339.
+LaTeX Info: Redefining \% on input line 1339.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1190,10 +1187,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [30]
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1412.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1397.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1412.
-LaTeX Info: Redefining \% on input line 1412.
+LaTeX Info: Redefining \. on input line 1397.
+LaTeX Info: Redefining \% on input line 1397.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1205,10 +1202,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [31]
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1472.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1456.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1472.
-LaTeX Info: Redefining \% on input line 1472.
+LaTeX Info: Redefining \. on input line 1456.
+LaTeX Info: Redefining \% on input line 1456.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1224,10 +1221,10 @@ File: lstlang1.sty 2023/02/27 1.9 listings language file
 )
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1521.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1503.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1521.
-LaTeX Info: Redefining \% on input line 1521.
+LaTeX Info: Redefining \. on input line 1503.
+LaTeX Info: Redefining \% on input line 1503.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1239,10 +1236,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [33]
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1576.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1564.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1576.
-LaTeX Info: Redefining \% on input line 1576.
+LaTeX Info: Redefining \. on input line 1564.
+LaTeX Info: Redefining \% on input line 1564.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1254,10 +1251,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [34]
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1637.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1625.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1637.
-LaTeX Info: Redefining \% on input line 1637.
+LaTeX Info: Redefining \. on input line 1625.
+LaTeX Info: Redefining \% on input line 1625.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1269,10 +1266,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [35]
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1674.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1662.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1674.
-LaTeX Info: Redefining \% on input line 1674.
+LaTeX Info: Redefining \. on input line 1662.
+LaTeX Info: Redefining \% on input line 1662.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1282,16 +1279,16 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-20.80278pt}.
 
 [36]
-Overfull \hbox (18.87907pt too wide) in paragraph at lines 1681--1682
+Overfull \hbox (18.87907pt too wide) in paragraph at lines 1669--1670
 []\T1/cmr/m/n/12 Godot En-gi-ne. (2024). \T1/cmr/m/it/12 Go-dot En-gi-ne Do-cu-men-ta-tion 4.x\T1/cmr/m/n/12 . [][]$\T1/cmtt/m/n/12 https : / / docs . godotengine .
  []
 
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1694.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1682.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1694.
-LaTeX Info: Redefining \% on input line 1694.
+LaTeX Info: Redefining \. on input line 1682.
+LaTeX Info: Redefining \% on input line 1682.
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
 (fancyhdr)                Make it at least 32.80278pt, for example:
@@ -1302,10 +1299,10 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 [37]
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1757.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1745.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1757.
-LaTeX Info: Redefining \% on input line 1757.
+LaTeX Info: Redefining \. on input line 1745.
+LaTeX Info: Redefining \% on input line 1745.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1315,17 +1312,17 @@ Package fancyhdr Warning: \headheight is too small (12.0pt):
 (fancyhdr)                \addtolength{\topmargin}{-20.80278pt}.
 
 [38]
-<github_logo.png, id=1283, 2055.68pt x 2055.68pt>
+<github_logo.png, id=1287, 2055.68pt x 2055.68pt>
 File: github_logo.png Graphic file (type png)
 <use github_logo.png>
-Package pdftex.def Info: github_logo.png  used on input line 1777.
+Package pdftex.def Info: github_logo.png  used on input line 1765.
 (pdftex.def)             Requested size: 135.89174pt x 135.88232pt.
 File: ulpgc_header.png Graphic file (type png)
 <use ulpgc_header.png>
-Package pdftex.def Info: ulpgc_header.png  used on input line 1782.
+Package pdftex.def Info: ulpgc_header.png  used on input line 1770.
 (pdftex.def)             Requested size: 27.97676pt x 28.45274pt.
-LaTeX Info: Redefining \. on input line 1782.
-LaTeX Info: Redefining \% on input line 1782.
+LaTeX Info: Redefining \. on input line 1770.
+LaTeX Info: Redefining \% on input line 1770.
 
 
 Package fancyhdr Warning: \headheight is too small (12.0pt): 
@@ -1343,21 +1340,21 @@ LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-22>
  ***********
 Package rerunfilecheck Info: File `MEMORIA.out' has not changed.
-(rerunfilecheck)             Checksum: D12F7D276F9BF30680969551D2B7D32F;19551.
+(rerunfilecheck)             Checksum: 10970EFFEBED8C77094B2D37968686D6;19551.
  ) 
 Here is how much of TeX's memory you used:
- 28408 strings out of 474222
- 515083 string characters out of 5748734
+ 28410 strings out of 474222
+ 515091 string characters out of 5748734
  2276975 words of memory out of 5000000
- 49531 multiletter control sequences out of 15000+600000
+ 49529 multiletter control sequences out of 15000+600000
  574447 words of font info for 71 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  84i,16n,87p,587b,2107s stack positions out of 10000i,1000n,20000p,200000b,200000s
 </usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmex10.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmmi8.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmr12.pfb></usr/share/texlive/texmf-dist/fonts/type1/public/amsfonts/cm/cmsy10.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx1728.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfbx2488.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfit1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfit1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm0600.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1440.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfrm1728.pfb></usr/share/texmf/fonts/type1/public/cm-super/sfti1200.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1000.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1095.pfb></usr/share/texmf/fonts/type1/public/cm-super/sftt1200.pfb>
-Output written on MEMORIA.pdf (39 pages, 1149936 bytes).
+Output written on MEMORIA.pdf (39 pages, 1150047 bytes).
 PDF statistics:
- 1544 PDF objects out of 1728 (max. 8388607)
- 1432 compressed objects within 15 object streams
- 700 named destinations out of 1000 (max. 500000)
+ 1549 PDF objects out of 1728 (max. 8388607)
+ 1437 compressed objects within 15 object streams
+ 704 named destinations out of 1000 (max. 500000)
  892 words of extra memory for PDF output out of 10000 (max. 10000000)
 

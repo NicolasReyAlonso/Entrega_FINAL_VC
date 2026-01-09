@@ -73,15 +73,15 @@
 \contentsline {subsection}{\numberline {10.5}HOMER}{29}{subsection.10.5}%
 \contentsline {subsection}{\numberline {10.6}Sistema de Rigging con Rigify}{30}{subsection.10.6}%
 \contentsline {subsection}{\numberline {10.7}Estructura del Esqueleto Exportado}{30}{subsection.10.7}%
-\contentsline {section}{\numberline {11}Sistema de Audio}{30}{section.11}%
+\contentsline {section}{\numberline {11}Sistema de Audio}{31}{section.11}%
 \contentsline {subsection}{\numberline {11.1}Música de Fondo}{31}{subsection.11.1}%
 \contentsline {subsection}{\numberline {11.2}Efectos de Sonido}{31}{subsection.11.2}%
 \contentsline {subsection}{\numberline {11.3}Integración en Godot}{31}{subsection.11.3}%
-\contentsline {subsection}{\numberline {11.4}Flujo de Creación de Audio}{31}{subsection.11.4}%
+\contentsline {subsection}{\numberline {11.4}Flujo de Creación de Audio}{32}{subsection.11.4}%
 \contentsline {section}{\numberline {12}Resultados y Pruebas}{32}{section.12}%
 \contentsline {subsection}{\numberline {12.1}Métricas de Rendimiento}{32}{subsection.12.1}%
 \contentsline {subsection}{\numberline {12.2}Precisión de Detección de Pose}{32}{subsection.12.2}%
-\contentsline {subsection}{\numberline {12.3}Usabilidad}{32}{subsection.12.3}%
+\contentsline {subsection}{\numberline {12.3}Usabilidad}{33}{subsection.12.3}%
 \contentsline {section}{\numberline {13}Guía de Instalación y Uso}{33}{section.13}%
 \contentsline {subsection}{\numberline {13.1}Requisitos del Sistema}{33}{subsection.13.1}%
 \contentsline {subsection}{\numberline {13.2}Instalación de Dependencias Python}{33}{subsection.13.2}%
@@ -100,7 +100,7 @@
 \contentsline {subsection}{\numberline {16.1}Objetivos Cumplidos}{36}{subsection.16.1}%
 \contentsline {subsection}{\numberline {16.2}Conocimientos Aplicados}{36}{subsection.16.2}%
 \contentsline {subsection}{\numberline {16.3}Reflexiones Finales}{36}{subsection.16.3}%
-\contentsline {section}{Referencias}{37}{section*.19}%
-\contentsline {section}{Anexo A: Índices MediaPipe}{38}{section*.20}%
-\contentsline {section}{Anexo B: Estructura de Archivos}{38}{section*.22}%
-\contentsline {section}{Anexo C: GitHub del Proyecto}{39}{section*.23}%
+\contentsline {section}{Referencias}{37}{section*.23}%
+\contentsline {section}{Anexo A: Índices MediaPipe}{38}{section*.24}%
+\contentsline {section}{Anexo B: Estructura de Archivos}{38}{section*.26}%
+\contentsline {section}{Anexo C: GitHub del Proyecto}{39}{section*.27}%
