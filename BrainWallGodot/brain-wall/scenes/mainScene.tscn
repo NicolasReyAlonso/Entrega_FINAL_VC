@@ -196,6 +196,41 @@ transform = Transform3D(0.9740708, 0, -0.2262433, 0, 1, 0, 0.2262433, 0, 0.97407
 pixel_size = 0.002
 texture = ExtResource("15_hnm5q")
 
+[node name="Publico2" type="Node3D" parent="Publico"]
+transform = Transform3D(0.8874456, 0, -0.46091253, 0, 1, 0, 0.46091253, 0, 0.8874456, 1.0015457, 0.76, -0.30951226)
+
+[node name="Sprite3D" type="Sprite3D" parent="Publico/Publico2"]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, 0.1902349, -4.3451996)
+pixel_size = 0.003
+texture = ExtResource("10_2n1xb")
+
+[node name="Sprite3D2" type="Sprite3D" parent="Publico/Publico2"]
+transform = Transform3D(0.9454902, 0, -0.32565066, 0, 1, 0, 0.32565066, 0, 0.9454902, 1.1753125, -0.1975398, -4.2116637)
+pixel_size = 0.0015
+texture = ExtResource("11_ha8th")
+
+[node name="Sprite3D3" type="Sprite3D" parent="Publico/Publico2"]
+transform = Transform3D(0.9688603, 0, 0.24760781, 0, 1, 0, -0.24760781, 0, 0.9688603, -1.2231789, -0.0019948483, -4.2336745)
+pixel_size = 0.0025
+texture = ExtResource("12_3tio3")
+
+[node name="Sprite3D4" type="Sprite3D" parent="Publico/Publico2"]
+transform = Transform3D(0.9765033, 0, 0.21550234, 0, 1, 0, -0.21550234, 0, 0.9765033, -0.8261628, 0.32664418, -4.6274414)
+pixel_size = 0.0017
+texture = ExtResource("13_3tio3")
+
+[node name="Sprite3D5" type="Sprite3D" parent="Publico/Publico2"]
+
+[node name="Sprite3D6" type="Sprite3D" parent="Publico/Publico2"]
+transform = Transform3D(0.97844416, 0, -0.20651157, 0, 1, 0, 0.20651157, 0, 0.97844416, 0.7499453, 0, -4.398988)
+pixel_size = 0.0025
+texture = ExtResource("14_vdgl5")
+
+[node name="Sprite3D7" type="Sprite3D" parent="Publico/Publico2"]
+transform = Transform3D(0.9740708, 0, -0.2262433, 0, 1, 0, 0.2262433, 0, 0.9740708, 0.37958735, 0.5578352, -4.645806)
+pixel_size = 0.002
+texture = ExtResource("15_hnm5q")
+
 [node name="Publico3" type="Node3D" parent="Publico"]
 transform = Transform3D(0.7754187, 0, 0.6314477, 0, 1, 0, -0.6314477, 0, 0.7754187, 0.19895172, 0.76, -1.2640235)
 
